@@ -1,3 +1,4 @@
+import java.util.concurrent.TimeUnit;
 
 public class Player {
 	int xPos, yPos;
@@ -19,6 +20,21 @@ public class Player {
 		} else if (lastAction.equals("down") && l.board[copyX][++copyY].walkable) {
 			yPos++;
 		}
+	}
+	
+	public void putBomb(String lastAction, Level l, int xPos, int yPos) {
+		if (lastAction.equals("space") && l.board[xPos][yPos].available == true) {
+			l.board[xPos][yPos] = new Bomb();
+
+		}
+	}
+
+	public int getxPos() {
+		return xPos;
+	}
+
+	public int getyPos() {
+		return yPos;
 	}
 
 }

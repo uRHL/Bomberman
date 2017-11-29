@@ -16,5 +16,6 @@ public class NormalBlock extends Block {
 
 	public NormalBlock() {
 		walkable=true;
+		available = true;
 	}
 }
