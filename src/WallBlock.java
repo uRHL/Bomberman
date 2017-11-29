@@ -6,4 +6,10 @@ public class WallBlock extends Block {
 		walkable = false;
 		available = false;
 	}
+
+	@Override
+	public int getField() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

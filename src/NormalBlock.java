@@ -17,5 +17,12 @@ public class NormalBlock extends Block {
 	public NormalBlock() {
 		walkable=true;
 		available = true;
+		image = null;
+	}
+
+	@Override
+	public int getField() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

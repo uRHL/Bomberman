@@ -1,5 +1,5 @@
 
-public class Block {
+public abstract class Block {
 	String image;
 	boolean walkable;
 	boolean available;
@@ -7,4 +7,7 @@ public class Block {
 	public String getImage() {
 		return image;
 	}
+	public abstract int getField();
+		
+	
 }

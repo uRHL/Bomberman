@@ -22,12 +22,18 @@ public class Player {
 		}
 	}
 	
-	public void putBomb(String lastAction, Level l, int xPos, int yPos) {
+	public void putBomb(String lastAction, Level l, int timer) {
+		int copyX = 1, copyY = 1;
 		if (lastAction.equals("space") && l.board[xPos][yPos].available == true) {
-			l.board[xPos][yPos] = new Bomb();
-
+			l.board[xPos][yPos] = new Bomb(timer);
+			copyX=xPos;
+			copyY=yPos;
 		}
+		if ((l.board[copyX][copyY].getField())+10<timer) {
+			l.board[copyX][copyY] = new NormalBlock();
+			}
 	}
+
 
 	public int getxPos() {
 		return xPos;
