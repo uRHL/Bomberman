@@ -75,8 +75,13 @@ public class Main {
 
 				p1.move(lastAction, l1);
 				visualBoard.gb_moveSprite(0, p1.xPos, p1.yPos);
+
+				
+				p1.putBomb(lastAction, l1, p1.xPos, p1.yPos);
+				
+
 								
-				//cambios
+
 //				if (lastAction.equals("space")) {
 //				visualBoard.gb_setSquareImage(p1.getxPos(), p1.getyPos(), "bomb1.gif");
 //			}
