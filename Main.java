@@ -32,6 +32,8 @@ public class Main {
 		Level l1=new Level();
 		for (int ii = 0; ii < l1.board.length; ii++) {
 			for (int jj = 0; jj < l1.board[ii].length; jj++) {
+				
+				
 				if (l1.board[ii][jj].getImage()!=null) {// Then it will be a brick or a wall block
 					visualBoard.gb_setSquareImage(ii, jj, l1.board[ii][jj].getImage());
 				}else{
@@ -75,36 +77,16 @@ public class Main {
 
 				p1.move(lastAction, l1);
 				visualBoard.gb_moveSprite(0, p1.xPos, p1.yPos);
-
-				
-				p1.putBomb(lastAction, l1, p1.xPos, p1.yPos);
-				
-
-								
-
-//				if (lastAction.equals("space")) {
-//				visualBoard.gb_setSquareImage(p1.getxPos(), p1.getyPos(), "bomb1.gif");
-//			}
-				
 			}
 
-			for (int ii = 0; ii < l1.board.length; ii++) {
-				for (int jj = 0; jj < l1.board[ii].length; jj++) {
-					if (l1.board[ii][jj].getImage()!=null) {// Then it will be a brick or a wall block
-						visualBoard.gb_setSquareImage(ii, jj, l1.board[ii][jj].getImage());
-					}else{
-						visualBoard.gb_setSquareColor(ii, jj, 178, 255, 102);
-					}				
-				}
-			}
 			/*
 			 * This makes the program to pause for 50 milliseconds. If not this
 			 * loop will run so fast that the pressed keys will be lost.
 			 * Invoking the sleep() method of the Thread class can produce an
 			 * exception (an error). This can happen so often that Java forces
-			 * us to either explicitly say that we donÂ´t care or to handle it.
+			 * us to either explicitly say that we don´t care or to handle it.
 			 * The "throws InterruptedException" in the header of the main
-			 * method is the way to say that we donÂ´t care. If the error appears
+			 * method is the way to say that we don´t care. If the error appears
 			 * the program will stop. A better solution would have been to
 			 * handle the exception using a try-catch sentence. But it is out of
 			 * the scope of this course.
