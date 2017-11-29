@@ -48,6 +48,9 @@ public class Main {
 		// position
 		Player p1= new Player();
 		visualBoard.gb_addSprite(0, p1.image, true);
+		
+
+		
 		// We will store its coordinates here		
 		// 2) placing the sprite at a board position. Parameters are the sprite
 		// id, the x and the y
@@ -59,6 +62,15 @@ public class Main {
 		// we use an infinite loop
 		
 		int timer=0;
+		
+		Balloon[] balloon = new Balloon[(int)((Math.random()*10)+1)];
+		
+		for (int ii = 0; ii<balloon.length; ii++) {
+			balloon[ii] = new Balloon(l1);
+			visualBoard.gb_addSprite((ii+1) , balloon[ii].image, false);
+			visualBoard.gb_moveSprite((ii+1), balloon[ii].xPos, balloon[ii].yPos);
+			visualBoard.gb_setSpriteVisible((ii+1), true);
+		}
 		
 		while (true) {
 			timer++;
@@ -77,20 +89,17 @@ public class Main {
 				// Notice that in the real game the movements should be of 1/10
 				// cell. There is a method to do it.
 
+				
 				p1.move(lastAction, l1);
 				visualBoard.gb_moveSprite(0, p1.xPos, p1.yPos);
-
-				
 				p1.putBomb(lastAction, l1, timer);
 				
 				
-
-								
-
-//				if (lastAction.equals("space")) {
-//				visualBoard.gb_setSquareImage(p1.getxPos(), p1.getyPos(), "bomb1.gif");
-//			}
-				
+			}
+			
+			for (int ii=0; ii<balloon.length && timer%5 == 0; ii++) {
+				balloon[ii].move(l1);
+				visualBoard.gb_moveSprite((ii+1), balloon[ii].xPos, balloon[ii].yPos);
 			}
 
 			for (int ii = 0; ii < l1.board.length; ii++) {

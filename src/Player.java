@@ -1,4 +1,3 @@
-import java.util.concurrent.TimeUnit;
 
 public class Player {
 	int xPos, yPos;
