@@ -1,4 +1,4 @@
 
 public class Constants {
-	final static int BOARD_SIZE = 11;
+	final static int BOARD_SIZE = 15;
 }

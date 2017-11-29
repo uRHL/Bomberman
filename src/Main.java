@@ -57,7 +57,11 @@ public class Main {
 		visualBoard.gb_setSpriteVisible(0, true);
 		// Main game loop. This will be executing until we finish. As an example
 		// we use an infinite loop
+		
+		int timer=0;
+		
 		while (true) {
+			timer++;
 			// The gb_getLastAction() method returns a String with the last
 			// action the user performed in the GUI. Examples are "right", "up",
 			// "space". See the documentation for more details.
@@ -77,7 +81,8 @@ public class Main {
 				visualBoard.gb_moveSprite(0, p1.xPos, p1.yPos);
 
 				
-				p1.putBomb(lastAction, l1, p1.xPos, p1.yPos);
+				p1.putBomb(lastAction, l1, timer);
+				
 				
 
 								

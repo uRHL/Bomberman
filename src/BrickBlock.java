@@ -11,4 +11,10 @@ public class BrickBlock extends Block {
 			bonus= new Bonus();
 		}
 	}
+
+	@Override
+	public int getField() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
