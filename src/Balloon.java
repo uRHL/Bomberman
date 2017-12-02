@@ -1,6 +1,6 @@
 
 
-public class Balloon extends Enemy{
+public class Balloon extends Enemy {
 
 	public Balloon(Level l) {
 		image = "enemy111.png";
