@@ -12,10 +12,11 @@ package sprites;
 public abstract class Enemy extends Sprite {
 
     // The xPos, yPos, and image are fields of the superclass Sprite, declared there
+    public static final byte attackDamage = 20;
+
     /**
      * Boolean variable controlling if the enemy if alive (is has hp) or not (0 hp).
      */
-    boolean alive;
 
     /**
      * Initializes the field id, calling the super constructor.
