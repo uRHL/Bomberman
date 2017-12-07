@@ -8,8 +8,8 @@ import blocks.*;
  * unique ID number, x and y positions, a collection of images, belongs to a
  * fixed level, and some Bombs.
  * 
- * @author Ramón Hernández León. Bachelor Degree in Computer Science. UC3M
- * @author Miguel Espinosa Miñano. Bachelor Degree in Computer Science. UC3M
+ * @author RamÃ³n HernÃ¡ndez LeÃ³n. Bachelor Degree in Computer Science. UC3M
+ * @author Miguel Espinosa MiÃ±ano. Bachelor Degree in Computer Science. UC3M
  * @since December, 6, 2017
  * @version 1.1
  */
