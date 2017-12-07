@@ -7,8 +7,8 @@ package blocks;
  * 
  * Normal-blocks are those composing the walkable paths.
  * 
- * @author Ramón Hernández León. Bachelor Degree in Computer Science. UC3M
- * @author Miguel Espinosa Miñano. Bachelor Degree in Computer Science. UC3M
+ * @author RamÃ³n HernÃ¡ndez LeÃ³n. Bachelor Degree in Computer Science. UC3M
+ * @author Miguel Espinosa MiÃ±ano. Bachelor Degree in Computer Science. UC3M
  * @since December, 6, 2017
  * @version 1.1
  */
