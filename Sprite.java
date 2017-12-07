@@ -34,6 +34,10 @@ public abstract class Sprite {
      */
     Level ownLevel;
 
+    protected boolean alive;
+    
+    protected byte health;
+
     /**
      * Constructor. Initializes the ID of the sprite to the number given as a
      * parameter. The rest of the fields are initialized in the constructor of the
@@ -76,6 +80,18 @@ public abstract class Sprite {
      */
     public int getID() {
         return ID;
+    }
+    
+    public byte getHealth() {
+        return health;
+    }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
     }
 
     /**

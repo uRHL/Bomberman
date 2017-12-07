@@ -23,11 +23,7 @@ public class Player extends Sprite {
     /**
      * Variables used for changing the images of the player
      */
-    private int up = 0, down = 0, left = 0, right = 0;
-
-    boolean alive = true;
-
-    int health = 100;
+    private int up = 0, down = 0, left = 0, right = 0;    
 
     /**
      * Constructor. Initializes the ID number ('super' constructor), the X-position
@@ -41,10 +37,12 @@ public class Player extends Sprite {
      */
     public Player(Level l, int id) {
         super(id);
+        setAlive(true);
         xPos = 1;
         yPos = 1;
         image = "bomberman111.png";
         ownLevel = l;
+        health = 100;
         bombs = new Bomb[] { new Bomb() };
 
     }
@@ -156,5 +154,9 @@ public class Player extends Sprite {
         alive = false;
         image = "bomberman141.png";
     }
+
+    public void decrementHealth() {
+        health -= Enemy.attackDamage;
+    }    
 
 }

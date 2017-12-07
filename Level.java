@@ -22,7 +22,7 @@ public class Level {
      * one is reserved for the array of 'players', the second for the array of
      * 'balloons' and the third for the array of 'drops'
      */
-    public final static Sprite[][] sprites = new Sprite[2][]; // dimension 2 until 'Drops' are developed
+    public final static Sprite[][] sprites = new Sprite[3][];
 
     /**
      * Constructor. Initializes a full level, containing a board and the sprites
@@ -54,8 +54,7 @@ public class Level {
         // Only one player for this version
         sprites[0] = new Player[] { new Player(this, Main.useID()) };
         sprites[1] = createsBallons();
-
-        // sprites[2] = createDrops();
+        sprites[2] = createDrops();
         // Drop class needs to be developed yet
 
     }
@@ -72,6 +71,14 @@ public class Level {
 
         }
         return balloon;
+    }
+
+    public Drop[] createDrops() {
+        Drop[] drop = new Drop[(int) ((Math.random() * 3) + 1)];
+        for (int ii = 0; ii < drop.length; ii++) {
+            drop[ii] = new Drop(this, Main.useID());
+        }
+        return drop;
     }
 
     /**

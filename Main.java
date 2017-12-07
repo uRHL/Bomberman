@@ -61,6 +61,11 @@ public class Main {
      * the position in that array were array of Balloon is located
      */
     public static final byte BALLOONS_INDEX = 1;
+    /**
+     * Datum used to simplify the access to the sprites array of the Level. It means
+     * the position in that array were array of Drop is located
+     */
+    public static final byte DROPS_INDEX = 2;
 
     public static void main(String[] args) throws InterruptedException {
         // This changes the local settings of the computer to English, so the
@@ -87,8 +92,9 @@ public class Main {
         // we use an infinite loop
 
         initializeSprites(); // Adding all the sprites for first time to the visualBoard
-
-        while (true) {
+        visualBoard.gb_setValueHealthMax(Constants.MAX_HEALTH);
+        visualBoard.gb_setValueHealthCurrent(Constants.MAX_HEALTH);
+        while (levels[currentLevel].sprites[0][0].isAlive()) { // The player stills alive
             timer++;
             visualBoard.gb_println(String.valueOf(timer));
             // The gb_getLastAction() method returns a String with the last
@@ -120,6 +126,10 @@ public class Main {
             if (timer % 5 == 0) {
                 moveBallons();
             }
+            if ((timer + 2) % 5 == 0) {
+                moveDrops();
+            }
+            enemiesAttacks();
             detonate();
             printBoard();
             /*
@@ -151,6 +161,34 @@ public class Main {
 
     }
 
+    private static void moveDrops() {
+        for (int ii = 0; ii < levels[currentLevel].sprites[DROPS_INDEX].length; ii++) {
+
+            levels[currentLevel].sprites[DROPS_INDEX][ii].move();
+            moveSprite(levels[currentLevel].sprites[DROPS_INDEX][ii].getID());
+        }
+    }
+
+    private static void enemiesAttacks() {
+        Player playerCopy = (Player) levels[currentLevel].sprites[0][0];
+        for (int i = 1; i < levels[currentLevel].sprites.length; i++) {
+            for (int j = 0; j < levels[currentLevel].sprites[i].length; j++) {
+                if (levels[currentLevel].sprites[i][j].getxPos() == playerCopy.getxPos()
+                        && levels[currentLevel].sprites[i][j].getyPos() == playerCopy.getyPos()) {
+                    // playerCopy.decrementHealth();
+                    visualBoard.gb_println("You have lost 20 points of health");
+                    visualBoard.gb_setValueHealthCurrent(playerCopy.getHealth());
+                    if (playerCopy.getHealth() == 0) {
+                        playerCopy.killed();
+                        visualBoard.gb_setSpriteImage(0, playerCopy.getImage());
+                        visualBoard.gb_println("You have been killed");
+                    }
+
+                }
+            }
+        }
+    }
+
     /**
      * Prints the current situation of the Level
      * 
@@ -177,11 +215,18 @@ public class Main {
      * @param id
      *            ID of the sprite to add
      */
-    public static void addSprite(int id) {
+    public static void addSpriteByID(int id) {
         Sprite currentSprite = Level.getSpriteByID(id);
         visualBoard.gb_addSprite(id, currentSprite.getImage(), true);
         moveSprite(id);
         setVisible(id);
+
+    }
+
+    public static void addSprite(Sprite spriteToAdd) {
+        visualBoard.gb_addSprite(spriteToAdd.getID(), spriteToAdd.getImage(), true);
+        moveSprite(spriteToAdd.getID());
+        setVisible(spriteToAdd.getID());
 
     }
 
@@ -216,9 +261,10 @@ public class Main {
     public static void moveSprite(int id) {
         Sprite movingSprite = Level.getSpriteByID(id);
         try {
-            visualBoard.gb_moveSprite(movingSprite.getID(), movingSprite.getxPos(), movingSprite.getyPos());
+            visualBoard.gb_setSpriteImage(id, movingSprite.getImage());
+            visualBoard.gb_moveSprite(id, movingSprite.getxPos(), movingSprite.getyPos());
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 
@@ -229,7 +275,7 @@ public class Main {
     public static void initializeSprites() {
         for (int i = 0; i < levels[currentLevel].sprites.length; i++) {
             for (int j = 0; j < levels[currentLevel].sprites[i].length; j++) {
-                addSprite(j);
+                addSprite(levels[currentLevel].sprites[i][j]);
             }
         }
     }

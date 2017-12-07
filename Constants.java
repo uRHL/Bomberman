@@ -11,4 +11,5 @@ package structures;
  */
 public class Constants {
     public final static int BOARD_SIZE = 15;
+    public final static int MAX_HEALTH = 100;
 }
