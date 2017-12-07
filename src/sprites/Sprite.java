@@ -6,8 +6,8 @@ import structures.Level;
  * Abstract class that represents any type of sprite. Each one, will have and X
  * and Y position, a fixed image and an unique ID number identifying it.
  * 
- * @author Ramón Hernández León. Bachelor Degree in Computer Science. UC3M
- * @author Miguel Espinosa Miñano. Bachelor Degree in Computer Science. UC3M
+ * @author RamÃ³n HernÃ¡ndez LeÃ³n. Bachelor Degree in Computer Science. UC3M
+ * @author Miguel Espinosa MiÃ±ano. Bachelor Degree in Computer Science. UC3M
  * @since December, 6, 2017
  * @version 1.1
  */
