@@ -8,8 +8,8 @@ import structures.*;
  * range of explosion. Bombs can destroy the BrickBlocks that are inside the
  * range of explosion.
  * 
- * @author RamÃ³n HernÃ¡ndez LeÃ³n. Bachelor Degree in Computer Science. UC3M
- * @author Miguel Espinosa MiÃ±ano. Bachelor Degree in Computer Science. UC3M
+ * @author Ramón Hernández León. Bachelor Degree in Computer Science. UC3M
+ * @author Miguel Espinosa Miñano. Bachelor Degree in Computer Science. UC3M
  * @since December, 6, 2017
  * @version 1.1
  */
@@ -28,7 +28,7 @@ public class Bomb {
     /**
      * Time when the bomb were placed
      */
-    private int initialTime;
+    private long initialTime;
 
     /**
      * X-index of the board of the level were the bomb were placed.
@@ -52,6 +52,10 @@ public class Bomb {
      * interactions between the board (of the Level) and the bomb.
      */
     private Level ownLevel;
+    /**
+     * Time, expressed in milliseconds, that takes the bomb to explode.
+     */
+    public final double COUNT_DOWN = 3000;
 
     /**
      * By default constructor
@@ -67,16 +71,16 @@ public class Bomb {
      * 
      * @param l
      *            Level were the bomb exists
-     * @param initialTime
+     * @param timer
      *            Time when the bomb had been placed
      * @param xPos
      *            X-index were the bomb is placed
      * @param yPos
      *            Y-index were the bomb is placed
      */
-    public Bomb(Level l, int initialTime, int xPos, int yPos) {
+    public Bomb(Level l, long timer, int xPos, int yPos) {
         ownLevel = l;
-        this.initialTime = initialTime;
+        this.initialTime = timer;
         this.xPos = xPos;
         this.yPos = yPos;
         placed = true;
@@ -110,7 +114,7 @@ public class Bomb {
      * 
      * @return The initialTime of the bomb
      */
-    public int getInitialTime() {
+    public long getInitialTime() {
         return initialTime;
     }
 
@@ -118,14 +122,13 @@ public class Bomb {
      * Checks if the countdown of the bomb has finished. If it have finished calls
      * the method detonate to explode the bomb
      * 
-     * @param currentTime
+     * @param timer
      *            value of the timer in the moment of calling
      * @return True if had passed enough time to detonate. False otherwise
      */
-    public void detonate(int currentTime) {
-        final int COUNT_DOWN = 60;
+    public void detonate(long timer) {
 
-        if (currentTime > this.initialTime + COUNT_DOWN) {
+        if (timer > this.initialTime + COUNT_DOWN) {
             if (this.isPlaced()) {
                 explode();
                 this.resetBomb();

@@ -8,8 +8,8 @@ import blocks.*;
  * unique ID number, x and y positions, a collection of images, belongs to a
  * fixed level, and some Bombs.
  * 
- * @author RamÃ³n HernÃ¡ndez LeÃ³n. Bachelor Degree in Computer Science. UC3M
- * @author Miguel Espinosa MiÃ±ano. Bachelor Degree in Computer Science. UC3M
+ * @author Ramón Hernández León. Bachelor Degree in Computer Science. UC3M
+ * @author Miguel Espinosa Miñano. Bachelor Degree in Computer Science. UC3M
  * @since December, 6, 2017
  * @version 1.1
  */
@@ -128,7 +128,7 @@ public class Player extends Sprite {
      * @param timer
      *            Time when the bomb was placed.
      */
-    public void putBomb(int timer) {
+    public void putBomb(long timer) {
         if (ownLevel.board[xPos][yPos].isAvailable()) {
             for (int i = 0; i < bombs.length; i++) { // Searching if there is any available bomb
                 if (!bombs[i].isPlaced()) { // The bomb has not been placed
