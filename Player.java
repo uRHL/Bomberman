@@ -20,6 +20,14 @@ public class Player extends Sprite {
      * carries in the bag. The number of bombs can be incremented with bonuses.
      */
     public Bomb[] bombs;
+    /**
+     * Variables used for changing the images of the player
+     */
+    private int up = 0, down = 0, left = 0, right = 0;
+
+    boolean alive = true;
+
+    int health = 100;
 
     /**
      * Constructor. Initializes the ID number ('super' constructor), the X-position
@@ -47,14 +55,64 @@ public class Player extends Sprite {
     @Override
     public void move(String lastAction) {
         int copyX = xPos, copyY = yPos;
-        if (lastAction.equals("right") && ownLevel.board[++copyX][copyY].isWalkable()) {
-            xPos++;
-        } else if (lastAction.equals("left") && ownLevel.board[--copyX][copyY].isWalkable()) {
-            xPos--;
-        } else if (lastAction.equals("up") && ownLevel.board[copyX][--copyY].isWalkable()) {
-            yPos--;
-        } else if (lastAction.equals("down") && ownLevel.board[copyX][++copyY].isWalkable()) {
-            yPos++;
+        if (alive) {
+            if (lastAction.equals("right") && ownLevel.board[++copyX][copyY].isWalkable()) {
+                if (right % 5 == 0) {
+                    image = "bomberman131.png";
+                } else if ((right + 1) % 5 == 0) {
+                    image = "bomberman132.png";
+                } else if ((right + 2) % 5 == 0) {
+                    image = "bomberman133.png";
+                } else if ((right + 3) % 5 == 0) {
+                    image = "bomberman134.png";
+                } else if ((right + 4) % 5 == 0) {
+                    image = "bomberman135.png";
+                }
+                right++;
+                xPos++;
+            } else if (lastAction.equals("left") && ownLevel.board[--copyX][copyY].isWalkable()) {
+                if (left % 5 == 0) {
+                    image = "bomberman121.png";
+                } else if ((left + 1) % 5 == 0) {
+                    image = "bomberman122.png";
+                } else if ((left + 2) % 5 == 0) {
+                    image = "bomberman123.png";
+                } else if ((left + 3) % 5 == 0) {
+                    image = "bomberman124.png";
+                } else if ((left + 4) % 5 == 0) {
+                    image = "bomberman125.png";
+                }
+                left++;
+                xPos--;
+            } else if (lastAction.equals("up") && ownLevel.board[copyX][--copyY].isWalkable()) {
+                if (up % 5 == 0) {
+                    image = "bomberman101.png";
+                } else if ((up + 1) % 5 == 0) {
+                    image = "bomberman102.png";
+                } else if ((up + 2) % 5 == 0) {
+                    image = "bomberman103.png";
+                } else if ((up + 3) % 5 == 0) {
+                    image = "bomberman104.png";
+                } else if ((up + 4) % 5 == 0) {
+                    image = "bomberman105.png";
+                }
+                up++;
+                yPos--;
+            } else if (lastAction.equals("down") && ownLevel.board[copyX][++copyY].isWalkable()) {
+                if (down % 5 == 0) {
+                    image = "bomberman111.png";
+                } else if ((down + 1) % 5 == 0) {
+                    image = "bomberman112.png";
+                } else if ((down + 2) % 5 == 0) {
+                    image = "bomberman113.png";
+                } else if ((down + 3) % 5 == 0) {
+                    image = "bomberman114.png";
+                } else if ((down + 4) % 5 == 0) {
+                    image = "bomberman115.png";
+                }
+                down++;
+                yPos++;
+            }
         }
     }
 
@@ -92,6 +150,11 @@ public class Player extends Sprite {
     @Override
     public void move() {
 
+    }
+
+    public void killed() {
+        alive = false;
+        image = "bomberman141.png";
     }
 
 }
