@@ -12,8 +12,8 @@ import edu.uc3m.game.GameBoardGUI;
  * and functions used to deal with the relation between virtual-graphic board
  * and their functioning.
  * 
- * @author Ram�n Hern�ndez Le�n. Bachelor Degree in Computer Science. UC3M
- * @author Miguel Espinosa Mi�ano. Bachelor Degree in Computer Science. UC3M
+ * @author Ramón Hernández León. Bachelor Degree in Computer Science. UC3M
+ * @author Miguel Espinosa Miñano. Bachelor Degree in Computer Science. UC3M
  * @since December, 6, 2017
  * @version 1.1
  */
@@ -136,9 +136,9 @@ public class Main {
              * This makes the program to pause for 50 milliseconds. If not this loop will
              * run so fast that the pressed keys will be lost. Invoking the sleep() method
              * of the Thread class can produce an exception (an error). This can happen so
-             * often that Java forces us to either explicitly say that we don´t care or to
+             * often that Java forces us to either explicitly say that we donÂ´t care or to
              * handle it. The "throws InterruptedException" in the header of the main method
-             * is the way to say that we don´t care. If the error appears the program will
+             * is the way to say that we donÂ´t care. If the error appears the program will
              * stop. A better solution would have been to handle the exception using a
              * try-catch sentence. But it is out of the scope of this course.
              */
