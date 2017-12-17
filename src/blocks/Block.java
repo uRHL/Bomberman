@@ -1,5 +1,8 @@
 package blocks;
 
+import bonuses.Bonus;
+import structures.Main;
+
 /**
  * Block class represents an abstract block. Blocks are represented by an
  * 'image', and some boolean variables defining different characteristics, such
@@ -11,7 +14,7 @@ package blocks;
  * @since December, 6, 2017
  * @version 1.1
  */
-public abstract class Block {
+public class Block {
     /**
      * Name of the image that represents the type of block
      */
@@ -36,6 +39,11 @@ public abstract class Block {
      * can be destroyed; false if not
      */
     protected boolean breakable;
+
+    /**
+     * Bonus type field that storages, if it has, the bonus contained in the block
+     */
+    protected Bonus bonus;
 
     /**
      * 
@@ -76,7 +84,18 @@ public abstract class Block {
      * @return the image representing the block
      */
     public String getImage() {
-        return image;
+        String img = "";
+        if (Main.trueSight) {
+            try {
+                img = getBonus().getImage();
+                Main.visualBoard.gb_println("bonus " + img);
+            } catch (Exception e) {
+                img = image;
+            }
+        } else {
+            img = image;
+        }
+        return img;
     }
 
     /**
@@ -107,6 +126,26 @@ public abstract class Block {
      */
     public void setAvailable(boolean available) {
         this.available = available;
+    }
+
+    /**
+     * 
+     * @return The bonus contained in the block, if it exists. Null otherwise
+     */
+    public Bonus getBonus() {
+        return bonus;
+    }
+
+    /**
+     * @param bonus
+     *            the bonus to set
+     */
+    public void setBonus(Bonus bonus) {
+        this.bonus = bonus;
+    }
+
+    public String toString() {
+        return this.getClass().getSimpleName();
     }
 
 }
