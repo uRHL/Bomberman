@@ -1,17 +1,20 @@
 package blocks;
 
+import bonuses.Bonus;
+import structures.Main;
+
 /**
  * Block class represents an abstract block. Blocks are represented by an
  * 'image', and some boolean variables defining different characteristics, such
  * as if it is walkable for the player. The class contains getters and setters
  * to deal with the values of the fields.
  * 
- * @author Ramón Hernández León. Bachelor Degree in Computer Science. UC3M
- * @author Miguel Espinosa Miñano. Bachelor Degree in Computer Science. UC3M
+ * @author Ramon Hernandez Leon. Bachelor Degree in Computer Science. UC3M
+ * @author Miguel Espinosa Mi�ano. Bachelor Degree in Computer Science. UC3M
  * @since December, 6, 2017
  * @version 1.1
  */
-public abstract class Block {
+public class Block {
     /**
      * Name of the image that represents the type of block
      */
@@ -36,6 +39,11 @@ public abstract class Block {
      * can be destroyed; false if not
      */
     protected boolean breakable;
+
+    /**
+     * Bonus type field that storages, if it has, the bonus contained in the block
+     */
+    protected Bonus bonus;
 
     /**
      * 
@@ -72,11 +80,26 @@ public abstract class Block {
     }
 
     /**
+     * <p>
+     * Gets the image of a block. If {@link structures.Main#trueSight trueSight} is
+     * true, the bonuses are completely visible (its image is above the block's
+     * one), therefore it tries to return the image of the bonus instead of the
+     * characteristic image of the block; if an exception occurs, the characteristic
+     * image will be returned.
+     * </p>
      * 
      * @return the image representing the block
      */
     public String getImage() {
-        return image;
+        String img = image;
+        if (Main.trueSight) {
+            try {
+                img = getBonus().getImage();
+            } catch (Exception e) {
+                img = image;
+            }
+        }
+        return img;
     }
 
     /**
@@ -107,6 +130,31 @@ public abstract class Block {
      */
     public void setAvailable(boolean available) {
         this.available = available;
+    }
+
+    /**
+     * 
+     * @return The bonus contained in the block, if it exists. Null otherwise
+     */
+    public Bonus getBonus() {
+        return bonus;
+    }
+
+    /**
+     * @param bonus
+     *            the bonus to set
+     */
+    public void setBonus(Bonus bonus) {
+        this.bonus = bonus;
+    }
+
+    /**
+     * Gets the simple name of the calling class.
+     * 
+     * @return The name of class
+     */
+    public String toString() {
+        return this.getClass().getSimpleName();
     }
 
 }
