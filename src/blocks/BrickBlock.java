@@ -1,7 +1,5 @@
 package blocks;
 
-import structures.Bonus;
-
 /**
  * BrickBlock class extends the abstract class 'block'. All the blocks of this
  * type will have the same image and properties. Brick-blocks can randomly
@@ -11,16 +9,12 @@ import structures.Bonus;
  * Brick-blocks represent those blocks that cannot be walked at first, but can
  * be destroyed in order to open a new path.
  * 
- * @author Ramón Hernández León. Bachelor Degree in Computer Science. UC3M
- * @author Miguel Espinosa Miñano. Bachelor Degree in Computer Science. UC3M
+ * @author Ramon Hernandez Leon. Bachelor Degree in Computer Science. UC3M
+ * @author Miguel Espinosa Mi�ano. Bachelor Degree in Computer Science. UC3M
  * @since December, 6, 2017
  * @version 1.1
  */
 public class BrickBlock extends Block {
-    /**
-     * Bonus type field that storages, if it has, the bonus contained in the block
-     */
-    Bonus bonus;
 
     /**
      * Constructor. Initializes all the blocks with the same properties: same image,
@@ -35,10 +29,8 @@ public class BrickBlock extends Block {
         setWalkable(false);
         setAvailable(false);
         setBreakable(true);
-        if ((int) (Math.random() * 2) == 0) {
-            bonus = new Bonus();
-        }
+        bonus = null;
 
-    }
+    }    
 
 }

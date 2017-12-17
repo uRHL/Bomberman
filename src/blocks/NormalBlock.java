@@ -1,5 +1,7 @@
 package blocks;
 
+import bonuses.Bonus;
+
 /**
  * NormalBlock class extends the abstract class 'block'. All the blocks of this
  * type will have the same properties. The 'image' of this block is null because
@@ -47,8 +49,8 @@ public class NormalBlock extends Block {
      * true (this blocks represents the walkable path), available true (bombs can be
      * placed only on this type of blocks), mined false (when created, the block
      * does not contain a bomb), breakable true (this blocks are not a obstacle,
-     * however, they can be destroyed), image null ('NormalBlocks' are repsented by
-     * a RGB color)
+     * however, they can be destroyed), image null ('NormalBlocks' are represented
+     * by a RGB color), bonus null (when initialized, no NormalBlack has a bonus).
      */
     public NormalBlock() {
         setWalkable(true);
@@ -56,6 +58,22 @@ public class NormalBlock extends Block {
         setMined(false);
         setBreakable(true);
         image = null;
+        bonus = null;
+    }
+
+    /**
+     * Overloaded constructor, used when a brickBlock had been destroyed.
+     * 
+     * @param bonus
+     *            Bonus the BrickBlock destroyed had.
+     */
+    public NormalBlock(Bonus bonus) {
+        setWalkable(true);
+        setAvailable(true);
+        setMined(false);
+        setBreakable(true);
+        image = null;
+        this.bonus = bonus;
     }
 
 }
