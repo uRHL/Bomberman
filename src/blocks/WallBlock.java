@@ -1,5 +1,7 @@
 package blocks;
 
+import bonuses.Bonus;
+
 /**
  * WallBlock class extends the abstract class 'block'. All the blocks of this
  * type will have the same image and properties.
@@ -23,5 +25,7 @@ public class WallBlock extends Block {
         setWalkable(false);
         setAvailable(false);
         setBreakable(false);
+        bonus = null;
     }
+
 }
