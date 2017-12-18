@@ -21,6 +21,14 @@ public abstract class Sprite {
      */
     protected int yPos;
     /**
+     * Coordinates in the X-axis of the visual board
+     */
+    protected double xCoord;
+    /**
+     * Coordinates in the Y-axis of the visual board
+     */
+    protected double yCoord;
+	/**
      * Image representing the sprite. Can be a collection of images in order to make
      * animations.
      */
@@ -66,6 +74,22 @@ public abstract class Sprite {
         return yPos;
     }
 
+    /**
+     * 
+     * @return The X-axis coordinates on the visual board
+     */
+    public int getxCoord() {
+		return (int)(xCoord*10);
+	}
+
+    /**
+     * 
+     * @return The Y-axis coordinates on the visual board
+     */
+	public int getyCoord() {
+		return (int)(yCoord*10);
+	}
+	
     /**
      * 
      * @return the image representing the sprite

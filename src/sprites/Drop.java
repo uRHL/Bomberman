@@ -15,21 +15,27 @@ public class Drop extends Enemy {
             yPos = (int) (Math.random() * (Constants.BOARD_SIZE - 1) + 1);
 
         } while (!ownLevel.board[xPos][yPos].isAvailable() || (xPos == 1 && yPos == 1));
+        xCoord = xPos;
+        yCoord = yPos;
     }
 
     public void move() {
-        int copyX1 = xPos, copyX2 = xPos, copyX3 = xPos, copyX4 = xPos;
-        int copyY1 = yPos, copyY2 = yPos, copyY3 = yPos, copyY4 = yPos;
+        double copyX1 = Math.min((xCoord + 0.4), Constants.BOARD_SIZE), copyX2 = Math.min((xCoord + 0.4), Constants.BOARD_SIZE), copyX3 = Math.min((xCoord + 0.4), Constants.BOARD_SIZE), copyX4 = Math.min((xCoord + 0.4), Constants.BOARD_SIZE);
+        double copyY1 = Math.min((yCoord + 0.8), Constants.BOARD_SIZE), copyY2 = Math.min((yCoord + 0.8), Constants.BOARD_SIZE), copyY3 = Math.min((yCoord + 0.8), Constants.BOARD_SIZE), copyY4 = Math.min((yCoord + 0.8), Constants.BOARD_SIZE);
         int playerXpos = ownLevel.sprites[0][0].getxPos();
         int playerYpos = ownLevel.sprites[0][0].getyPos();
-        if (ownLevel.board[++copyX1][copyY1].isWalkable() && playerXpos > xPos) {
-            xPos++;
-        } else if (ownLevel.board[--copyX2][copyY2].isWalkable() && playerXpos < xPos) {
-            xPos--;
-        } else if (ownLevel.board[copyX3][--copyY3].isWalkable() && playerYpos < yPos) {
-            yPos--;
-        } else if (ownLevel.board[copyX4][++copyY4].isWalkable() && playerYpos > yPos) {
-            yPos++;
+        if (ownLevel.board[(int)(copyX1+0.2)][(int)(copyY1)].isWalkable() && playerXpos > xPos) {
+            xCoord = xCoord + 0.2;
+            xPos = (int) (xCoord);
+        } else if (ownLevel.board[(int)(copyX2-0.2)][(int)(copyY2)].isWalkable() && playerXpos < xPos) {
+            xCoord = xCoord - 0.2;
+            xPos = (int) (xCoord);
+        } else if (ownLevel.board[(int)(copyX3)][(int)(copyY3-0.2)].isWalkable() && playerYpos < yPos) {
+            yCoord = yCoord - 0.2;
+            yPos = (int) (yCoord);
+        } else if (ownLevel.board[(int)(copyX4)][(int)(copyY4-0.2)].isWalkable() && playerYpos > yPos) {
+            yCoord = yCoord + 0.2;
+            yPos = (int) (yCoord);
         }
     }
 
