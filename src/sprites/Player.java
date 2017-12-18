@@ -70,7 +70,7 @@ public class Player extends Sprite {
                 }
                 right++;
                 xCoord = xCoord + 0.2;
-                xPos = (int) (xCoord);
+                xPos = (int) (xCoord+0.5);
             } else if (lastAction.equals("left") && ownLevel.board[(int)(copyX-0.2)][(int)(copyY)].isWalkable()) {
                 if (left % 5 == 0) {
                     image = "bomberman121.png";
@@ -85,7 +85,7 @@ public class Player extends Sprite {
                 }
                 left++;
                 xCoord = xCoord - 0.2;
-                xPos = (int) (xCoord);
+                xPos = (int) (xCoord+0.5);
             } else if (lastAction.equals("up") && ownLevel.board[(int)(copyX)][(int)(copyY-0.2)].isWalkable()) {
                 if (up % 5 == 0) {
                     image = "bomberman101.png";
@@ -100,7 +100,7 @@ public class Player extends Sprite {
                 }
                 up++;
                 yCoord = yCoord - 0.2;
-                yPos = (int) (yCoord);
+                yPos = (int) (yCoord+0.5);
             } else if (lastAction.equals("down") && ownLevel.board[(int)(copyX)][(int)(copyY+0.2)].isWalkable()) {
                 if (down % 5 == 0) {
                     image = "bomberman111.png";
@@ -115,7 +115,7 @@ public class Player extends Sprite {
                 }
                 down++;
                 yCoord = yCoord + 0.2;
-                yPos = (int) (yCoord);
+                yPos = (int) (yCoord+0.5);
             }
         }
     }
