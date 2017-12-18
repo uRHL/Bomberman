@@ -38,6 +38,8 @@ public class Balloon extends Enemy {
 
         } while (ownLevel.board[xPos][yPos].isAvailable() == false || (xPos == 1 && yPos == 1));
 
+        xCoord = xPos;
+        yCoord = yPos;
     }
 
     /**
@@ -45,28 +47,29 @@ public class Balloon extends Enemy {
      */
     @Override
     public void move() {
-        int copyX = xPos, copyY = yPos;
+        double copyX = Math.min((xCoord + 0.4), Constants.BOARD_SIZE), copyY = Math.min((yCoord + 0.8), Constants.BOARD_SIZE);
         int randomNum = (int) (Math.random() * 4);
         switch (randomNum) {
         case 0: // moves to the right
-            if (ownLevel.board[++copyX][copyY].isWalkable()) {
-                xPos++;
+            if (ownLevel.board[(int)(copyX+0.2)][(int)(copyY)].isWalkable()) {
+                xCoord = xCoord + 0.2;
+                xPos = (int) (xCoord);
             }
             break;
         case 1: // moves to the left
-            if (ownLevel.board[--copyX][copyY].isWalkable()) {
-                xPos--;
-            }
+            if (ownLevel.board[(int)(copyX-0.2)][(int)(copyY)].isWalkable()) {
+                xCoord = xCoord - 0.2;
+                xPos = (int) (xCoord);            }
             break;
         case 2: // moves upwards
-            if (ownLevel.board[copyX][--copyY].isWalkable()) {
-                yPos--;
-            }
+            if (ownLevel.board[(int)(copyX)][(int)(copyY-0.2)].isWalkable()) {
+                yCoord = yCoord - 0.2;
+                yPos = (int) (yCoord);            }
             break;
         case 3: // moves downwards
-            if (ownLevel.board[copyX][++copyY].isWalkable()) {
-                yPos++;
-            }
+            if (ownLevel.board[(int)(copyX)][(int)(copyY+0.2)].isWalkable()) {
+                yCoord = yCoord + 0.2;
+                yPos = (int) (yCoord);            }
         }
 
     }
