@@ -15,15 +15,23 @@ import structures.*;
  */
 public class Bomb {
     /**
-     * Image of a bomb. It will be the same for all of them.
+     * Possible images for a bomb
      */
-    public static final String image = "bomb1.gif";
+    public static final String[] images = new String[] { "bomb1.gif", "bomb2.gif" };
+    /**
+     * Current image representing a bomb, initialized with the first possible image.
+     */
+    public static String image = images[0];
 
     /**
      * Range of explosion of a bomb, initialized at one. Can be incremented with
-     * bonuses
+     * bonuses up to 5.
      */
     private static int range = 1;
+    /**
+     * Maximum range of a bomb: 5.
+     */
+    private static final int MAX_RANGE = 5;
 
     /**
      * Time when the bomb were placed
@@ -119,66 +127,118 @@ public class Bomb {
     }
 
     /**
+     * 
+     * @return The range
+     */
+    public static int getRange() {
+        return range;
+    }
+
+    /**
+     * Increments by one the value of the {@link Bomb#range range}, up to the
+     * {@link Bomb#MAX_RANGE maximum}.
+     * 
+     * @return True if the value was changed successfully. False if not.
+     */
+    public static boolean incrementRange() {
+        boolean changed = false;
+        if (range < MAX_RANGE) {
+            range++;
+            changed = true;
+            Main.visualBoard.gb_setValueAbility1(range);
+        }
+        return changed;
+    }
+
+    /**
+     * Sets the range to its {@link Bomb#MAX_RANGE maximum}.
+     */
+    public static void fullRange() {
+        range = MAX_RANGE;
+        Main.visualBoard.gb_setValueAbility1(range);
+    }
+
+    /**
+     * Swaps automatically the image of the bomb, animating it.
+     */
+    public void animateImage() {
+        if (image.equals(images[0])) {
+            image = images[1];
+        } else {
+            image = images[0];
+        }
+    }
+
+    /**
      * Checks if the countdown of the bomb has finished. If it have finished calls
      * the method detonate to explode the bomb
      * 
      * @param timer
      *            value of the timer in the moment of calling
+     * @param ableRemoteControl
+     *            Refers to the field of the player {@link Player#remoteControl
+     *            remoteControl}
      * @return True if had passed enough time to detonate. False otherwise
      */
-    public void detonate(long timer) {
-
-        if (timer > this.initialTime + COUNT_DOWN) {
+    public void detonate(long timer, boolean ableRemoteControl) {
+        animateImage();
+        if (ableRemoteControl || timer > this.initialTime + COUNT_DOWN) {
             if (this.isPlaced()) {
                 explode();
                 this.resetBomb();
             }
         }
-
     }
 
     /**
+     * <p>
      * Checks if the blocks in the range (of explosion) of the bomb can be destroyed
      * and destroy them, if it is possible. Checks the four directions (up, down,
      * left, right), one by one.
+     * </p>
+     * <p>
+     * When the block is destroyed, a NormalBlock, that contains the bonus that the
+     * BrickBlock had, is created.
+     * </p>
      */
     private void explode() {
         // Checking the blocks to the right
         if (ownLevel.board[xPos + 1][yPos].isBreakable()) {
-            for (int i = xPos; i <= xPos + range; i++) {
+            for (int i = xPos; i <= xPos + range && i < Constants.BOARD_SIZE; i++) {
                 if (ownLevel.board[i][yPos].isBreakable()) {
-                    ownLevel.board[i][yPos] = new NormalBlock();
+                    ownLevel.board[i][yPos] = new NormalBlock(ownLevel.board[i][yPos].getBonus());
+
                 }
             }
         }
         // Checking the blocks to the left
         if (ownLevel.board[xPos - 1][yPos].isBreakable()) {
-            for (int i = xPos; i >= xPos - range; i--) {
+            for (int i = xPos; i >= xPos - range && i > 0; i--) {
                 if (ownLevel.board[i][yPos].isBreakable()) {
-                    ownLevel.board[i][yPos] = new NormalBlock();
+                    ownLevel.board[i][yPos] = new NormalBlock(ownLevel.board[i][yPos].getBonus());
                 }
             }
         }
         // Checking the blocks upwards
         if (ownLevel.board[xPos][yPos + 1].isBreakable()) {
-            for (int i = yPos; i <= yPos + range; i++) {
+            for (int i = yPos; i <= yPos + range && i > 0; i++) {
                 if (ownLevel.board[xPos][i].isBreakable()) {
-                    ownLevel.board[xPos][i] = new NormalBlock();
+                    ownLevel.board[xPos][i] = new NormalBlock(ownLevel.board[xPos][i].getBonus());
                 }
             }
         }
         // Checking the blocks downwards
         if (ownLevel.board[xPos][yPos - 1].isBreakable()) {
-            for (int i = yPos; i >= yPos - range; i--) {
+            for (int i = yPos; i >= yPos - range && i < Constants.BOARD_SIZE; i--) {
                 if (ownLevel.board[xPos][i].isBreakable()) {
-                    ownLevel.board[xPos][i] = new NormalBlock();
+                    ownLevel.board[xPos][i] = new NormalBlock(ownLevel.board[xPos][i].getBonus());
                 }
             }
         }
     }
 
     /**
-     * Set the values of the fields to 0 or false.
+     * Resets the bomb, setting the values of the fields to 0 or false.
      */
     public void resetBomb() {
         this.initialTime = 0;

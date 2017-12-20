@@ -1,6 +1,7 @@
 package sprites;
 
 import structures.Level;
+import structures.Main;
 
 /**
  * Abstract class that represents any type of sprite. Each one, will have and X
@@ -28,7 +29,20 @@ public abstract class Sprite {
      * Coordinates in the Y-axis of the visual board
      */
     protected double yCoord;
-	/**
+    /**
+     * Movement speed of the sprite, expressed in units per step.
+     */
+    protected float speed;
+    /**
+     * Maximum speed reachable
+     */
+    private float min_speed;
+    /**
+     * Minimum speed reachable
+     */
+    private float max_speed;
+
+    /**
      * Image representing the sprite. Can be a collection of images in order to make
      * animations.
      */
@@ -41,10 +55,16 @@ public abstract class Sprite {
      * Level where this sprite exists
      */
     Level ownLevel;
-
+    /**
+     * Storages if the sprite is alive ({@link Sprite#hp hp}>0), or not
+     * ({@link Sprite#hp hp}<=0).
+     */
     protected boolean alive;
-    
-    protected byte health;
+    /**
+     * Integer number indicating the health points of a sprite. If it reaches 0, the
+     * sprite is dead.
+     */
+    protected byte hp;
 
     /**
      * Constructor. Initializes the ID of the sprite to the number given as a
@@ -79,17 +99,17 @@ public abstract class Sprite {
      * @return The X-axis coordinates on the visual board
      */
     public int getxCoord() {
-		return (int)(xCoord*10);
-	}
+        return (int) (xCoord * 10);
+    }
 
     /**
      * 
      * @return The Y-axis coordinates on the visual board
      */
-	public int getyCoord() {
-		return (int)(yCoord*10);
-	}
-	
+    public int getyCoord() {
+        return (int) (yCoord * 10);
+    }
+
     /**
      * 
      * @return the image representing the sprite
@@ -105,17 +125,80 @@ public abstract class Sprite {
     public int getID() {
         return ID;
     }
-    
+
     public byte getHealth() {
-        return health;
+        return hp;
     }
 
     public boolean isAlive() {
         return alive;
     }
 
-    public void setAlive(boolean alive) {
-        this.alive = alive;
+    /**
+     * Sets the hp. Then, sets the {@link Sprite#alive alive}
+     * 
+     * @param healthPoints
+     *            hp to set
+     */
+    protected void setHp(int healthPoints) {
+        hp = (byte) healthPoints;
+        if (hp > 0) {
+            alive = true;
+        } else {
+            alive = false;
+        }
+    }
+
+    /**
+     * @return the speed
+     */
+    public float getSpeed() {
+        return speed;
+    }
+
+    /**
+     * @param speed
+     *            the speed to set
+     * @return True if the speed was changed successfully. False if not.
+     */
+    public boolean setSpeed(float speed) {
+        boolean changed = false;
+        if (speed >= this.min_speed && speed <= this.max_speed) {
+            this.speed = speed;
+            changed = true;
+            Main.visualBoard.gb_setValueAbility2((int) (this.speed*10));
+        }
+        return changed;
+    }
+
+    /**
+     * @return the mIN_SPEED
+     */
+    public float getMin_speed() {
+        return min_speed;
+    }
+
+    /**
+     * @param mIN_SPEED
+     *            the mIN_SPEED to set
+     */
+    protected void setMin_speed(float mIN_SPEED) {
+        min_speed = mIN_SPEED;
+    }
+
+    /**
+     * @return the mAX_SPEED
+     */
+    public float getMax_speed() {
+        return max_speed;
+    }
+
+    /**
+     * @param mAX_SPEED
+     *            the mAX_SPEED to set
+     */
+    protected void setMax_speed(float mAX_SPEED) {
+        max_speed = mAX_SPEED;
     }
 
     /**
@@ -131,4 +214,5 @@ public abstract class Sprite {
      */
     public abstract void move(String lastAction);
 
+    public abstract void killed();
 }
