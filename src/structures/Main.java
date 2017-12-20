@@ -33,10 +33,8 @@ public class Main {
 
     /**
      * Level type array containing all the levels of the whole game
-     * 
-     * ONLY ONE LEVEL FOR THIS VERSION
      */
-    public static Level[] levels = new Level[] { new Level() };
+    public static Level[] levels = new Level[] { new Level(), null, null, null, null, null, null, null, null, null };
 
     /**
      * Variable to storage the current Level, where the player is
@@ -189,7 +187,7 @@ public class Main {
         // Checking its value. We are not controlling the borders.
         // Notice that in the real game the movements should be of 1/10
         // cell. There is a method to do it.
-        Player playerCopy = (Player) levels[currentLevel].sprites[0][0];
+        Player playerCopy = (Player) levels[currentLevel].getSpriteByID(PLAYER_ID);
 
         if (lastAction.equals("space")) {
             playerCopy.putBomb(timer);
@@ -248,18 +246,29 @@ public class Main {
         }
     }
 
+    /**
+     * Sets the text and values of the fields at the right of the visualBoard
+     * 
+     * @see Main#refreshGBvalues()
+     */
     public static void initializeGBtext() {
         // Changing the player name in the GUI
         visualBoard.gb_setTextPlayerName("Bomberman");
+        visualBoard.gb_setPortraitPlayer("White_Bomberman_R.png");
+
+        visualBoard.gb_setTextPointsUp("Points");
+        visualBoard.gb_setTextPointsDown("Bombs");
         visualBoard.gb_setValueHealthMax(Constants.MAX_HEALTH);
         visualBoard.gb_setTextAbility1("Range");
         visualBoard.gb_setTextAbility2("Speed");
-        visualBoard.gb_setTextPointsDown("Bombs");
-        visualBoard.gb_setTextPointsUp("Points");
+
         refreshGBvalues();
 
     }
 
+    /**
+     * Refreshes the values of the fields at the right of the visualBoard
+     */
     public static void refreshGBvalues() {
         visualBoard.gb_setValueHealthCurrent(levels[currentLevel].getSpriteByID(PLAYER_ID).getHealth());
         visualBoard.gb_setValueAbility1(Bomb.getRange());
@@ -268,6 +277,12 @@ public class Main {
         visualBoard.gb_setValuePointsDown(
                 ((Player) (levels[currentLevel].getSpriteByID(PLAYER_ID))).getNumOfAvailableBombs());
         visualBoard.gb_setValuePointsUp(((Player) (levels[currentLevel].getSpriteByID(PLAYER_ID))).getScore());
+        /*
+         * CurrentLevel indicates an index, therefore it starts at zero. The number
+         * obtained adding one is more natural and easier to understand, because the
+         * zero-level is the first one in deed.
+         */
+        visualBoard.gb_setValueLevel(currentLevel + 1);
     }
 
     /**
@@ -338,8 +353,13 @@ public class Main {
      */
     public static void moveSprite(int id) {
         Sprite movingSprite = levels[currentLevel].getSpriteByID(id);
-        visualBoard.gb_setSpriteImage(id, movingSprite.getImage());
-        visualBoard.gb_moveSpriteCoord(id, movingSprite.getxCoord(), movingSprite.getyCoord());
+        if (movingSprite.isAlive()) {
+            visualBoard.gb_setSpriteImage(id, movingSprite.getImage());
+            visualBoard.gb_moveSpriteCoord(id, movingSprite.getxCoord(), movingSprite.getyCoord());
+        } else {
+            // The sprite is not alive, therefore it will be eliminated from the board.
+            setVisible(id, false);
+        }
     }
 
     /**
@@ -369,9 +389,21 @@ public class Main {
      */
     public static void detonate(boolean ableRemoteControl) {
         Player playerCopy = (Player) levels[currentLevel].getSpriteByID(PLAYER_ID);
+        Bomb.animateImage();
         for (int i = 0; i < playerCopy.getBombs().length; i++) {
             playerCopy.getBombs()[i].detonate(timer, ableRemoteControl);
         }
+    }
+
+    /**
+     * Creates the next level, and declares null the previous one, in order to save
+     * memory.
+     */
+    public static void nextLevel() {
+        levels[currentLevel] = null;
+        currentLevel++;
+        levels[currentLevel] = new Level();
+
     }
 
 }

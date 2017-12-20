@@ -20,8 +20,8 @@ public class Level {
     public final Block[][] board = new Block[Constants.BOARD_SIZE][Constants.BOARD_SIZE];
     /**
      * Irregular matrix containing arrays of all the sprites of the level. The index
-     * one is reserved for the array of {@link Player Players}, the second for the
-     * array of {@link Balloon Balloons} and the third for the array of {@link Drop
+     * zero is reserved for the array of {@link Player Players}, the index one for the
+     * array of {@link Balloon Balloons} and the index two for the array of {@link Drop
      * Drops}
      */
     public final Sprite[][] sprites = new Sprite[3][];
@@ -68,8 +68,7 @@ public class Level {
                 xIndex = (int) (Math.random() * 14 + 1);
                 yIndex = (int) (Math.random() * 14 + 1);
 
-            } while (!board[xIndex][yIndex].toString().equals("BrickBlock")
-                    && (!board[xIndex][yIndex].doHaveBonus()));
+            } while (!board[xIndex][yIndex].toString().equals("BrickBlock") && (!board[xIndex][yIndex].doHaveBonus()));
             board[xIndex][yIndex].setBonus(randomBonus(bonuses));
             // this is just for debugging
             Main.visualBoard.gb_println(
@@ -117,7 +116,7 @@ public class Level {
      */
     public Bonus[] initializeBonuses() {
 
-        Bonus[] bonuses = new Bonus[1];
+        Bonus[] bonuses = new Bonus[] { new Door() };
         /*
          * Checking if a level is able to have a determined type of bonus.
          */
@@ -165,15 +164,10 @@ public class Level {
      */
     private Bonus[] addBonus(Bonus[] oldArray, Bonus newBonus) {
         Bonus[] newArray;
-        if (oldArray[0] != null) {
-            newArray = new Bonus[oldArray.length + 1];
-            System.arraycopy(oldArray, 0, newArray, 0, oldArray.length);
-            newArray[oldArray.length] = newBonus;
+        newArray = new Bonus[oldArray.length + 1];
+        System.arraycopy(oldArray, 0, newArray, 0, oldArray.length);
+        newArray[oldArray.length] = newBonus;
 
-        } else {
-            oldArray[0] = newBonus;
-            newArray = oldArray;
-        }
         return newArray;
     }
 
@@ -189,9 +183,14 @@ public class Level {
         Bonus temp = new Bonus();
         do {
             int randomIndex = (int) (Math.random() * bonuses.length);
-            if (!bonuses[randomIndex].isPlaced()) {
-                temp = bonuses[randomIndex];
-                bonuses[randomIndex].setPlaced(true);
+            try {
+                if (!bonuses[randomIndex].isPlaced()) {
+                    temp = bonuses[randomIndex];
+                    bonuses[randomIndex].setPlaced(true);
+                }
+            } catch (Exception e) {
+                // null pointer exception
+                // Trying again with a different randomIndex
             }
         } while (!temp.isPlaced());
 
@@ -218,5 +217,27 @@ public class Level {
             }
         }
         return target;
+    }
+
+    /**
+     * Tells if all the enemies are dead.
+     * @see {@link Level#sprites}
+     * 
+     * @return True if all the enemies are dead. False otherwise.
+     */
+    public boolean allEnemiesDead() {
+        boolean allDead = true;
+        /*
+         * i starts at 1 because the zero index in the sprites array is reserved for the
+         * Players, and only the enemies are being considered.
+         */
+        for (int i = 1; i < sprites.length; i++) {
+            for (int j = 0; j < sprites[i].length; j++) {
+                if (sprites[i][j].isAlive()) {
+                    allDead = false;
+                }
+            }
+        }
+        return allDead;
     }
 }
