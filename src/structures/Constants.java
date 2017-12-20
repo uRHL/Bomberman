@@ -10,6 +10,6 @@ package structures;
  * @version 1.1
  */
 public class Constants {
-    public final static int BOARD_SIZE = 15;
+    public final static int BOARD_SIZE = 17;
     public final static int MAX_HEALTH = 100;
 }

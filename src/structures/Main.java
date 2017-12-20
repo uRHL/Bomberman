@@ -18,8 +18,7 @@ import edu.uc3m.game.GameBoardGUI;
  * @version 1.1
  */
 public class Main {
-    // See below for an explanation of throws InterruptedException
-
+    // See below for an explanation of throws InterruptedException    
     /**
      * Maximum ID reached at the moment, starting from 0, which is the 'player',
      * incremented by one for each new 'Sprite'
@@ -66,6 +65,11 @@ public class Main {
      * the position in that array were array of Drop is located
      */
     public static final byte DROPS_INDEX = 2;
+    /**
+     * When it is true, all the bonuses are visible, although the block that
+     * contains it has been destroyed or not.
+     */
+    public static boolean trueSight = false;
 
     public static void main(String[] args) throws InterruptedException {
         // This changes the local settings of the computer to English, so the
@@ -77,7 +81,7 @@ public class Main {
         printBoard();
 
         // Changing the player name in the GUI
-        visualBoard.gb_setTextPlayerName("Testing GUI");
+        visualBoard.gb_setTextPlayerName("Bomberman");
         // Adding a sprite to the board, it is done in three steps
         // 1) adding it. Parameters are a unique id, the file containing the
         // image and true if we want it to be on top of any other at the same
@@ -94,34 +98,44 @@ public class Main {
         initializeSprites(); // Adding all the sprites for first time to the visualBoard
         visualBoard.gb_setValueHealthMax(Constants.MAX_HEALTH);
         visualBoard.gb_setValueHealthCurrent(Constants.MAX_HEALTH);
+        visualBoard.gb_setTextAbility1("Range");
+        visualBoard.gb_setValueAbility1(Bomb.getRange());
+        visualBoard.gb_setTextAbility2("Speed");
+        visualBoard.gb_setValueAbility2((int) (levels[currentLevel].sprites[0][0].getSpeed() * 10));
+        visualBoard.gb_setTextPointsDown("Bombs");
+        visualBoard.gb_setValuePointsDown(((Player) (levels[currentLevel].sprites[0][0])).getBombs().length);
+        visualBoard.gb_setTextPointsUp("Points");
+        visualBoard.gb_setValuePointsUp(((Player) (levels[currentLevel].sprites[0][0])).getScore());
+        
         while (levels[currentLevel].sprites[0][0].isAlive()) { // The player stills alive
             timer = System.currentTimeMillis();
-            visualBoard.gb_println(String.valueOf(timer));
+            printBoard();
             // The gb_getLastAction() method returns a String with the last
             // action the user performed in the GUI. Examples are "right", "up",
             // "space". See the documentation for more details.
             // trim() removes any heading or tailing space
             String lastAction = visualBoard.gb_getLastAction().trim();
-            // board.setBounds(0, 0, BOARD_SIZE-1, BOARD_SIZE-1);
 
             // We only execute it if the user did something
             if (lastAction.length() > 0) {
-                // Printing the action on the console to check it is correct
-                visualBoard.gb_println(lastAction);
-                // Checking its value. We are not controlling the borders.
-                // Notice that in the real game the movements should be of 1/10
-                // cell. There is a method to do it.
+                switch (lastAction) {
+                case "command show":
+                    trueSight = !trueSight;
+                    break;
+                case "exit game":
+                    exit();
+                    break;
 
-                if (lastAction.equals("space")) {
-                    Player playerCopy = (Player) levels[currentLevel].sprites[0][0];
-                    playerCopy.putBomb(timer);
-                    // visualBoard.gb_moveSprite(0, player.xPos, player.yPos);
-                    // player.putBomb(lastAction, timer);
-                } else {
-                    levels[currentLevel].sprites[0][0].move(lastAction);
-                    moveSprite(0);// 0 is always the id of the player
+                default:
+                    if (lastAction.contains("New game")) {
+                        String playerName = lastAction.substring(7);
+                        levels[currentLevel] = new Level();
+                        visualBoard.gb_setTextPlayerName(playerName);
+                    } else {
+                        movePlayer(lastAction);
+                    }
+                    break;
                 }
-
             }
             if (timer % 5 == 0) {
                 moveBallons();
@@ -131,7 +145,7 @@ public class Main {
             }
             enemiesAttacks();
             detonate();
-            printBoard();
+            moveALLsprites();
             /*
              * This makes the program to pause for 50 milliseconds. If not this loop will
              * run so fast that the pressed keys will be lost. Invoking the sleep() method
@@ -147,26 +161,51 @@ public class Main {
     }
 
     /**
-     * Function to move the Balloons of the Level. Moves every single Balloon
-     * contained in the level (Balloon array in the Sprite array of the Level) first
-     * in the virtual board and then update their image in the visualBoard
+     * Ends the game
+     */
+    private static void exit() {
+        System.exit(0);
+    }
+
+    /**
+     * Function to move virtually the Balloons of the Level. Moves every single
+     * Balloon contained in the level ({@link Level#sprites Balloon array} in the
+     * Sprite array of the Level).
      */
     private static void moveBallons() {
-
         for (int ii = 0; ii < levels[currentLevel].sprites[BALLOONS_INDEX].length; ii++) {
-
-            levels[currentLevel].sprites[BALLOONS_INDEX][ii].move();
-            moveSprite(levels[currentLevel].sprites[BALLOONS_INDEX][ii].getID());
+            levels[currentLevel].sprites[BALLOONS_INDEX][ii].move(); // virtual move
         }
 
     }
 
+    /**
+     * Function to move virtually the Drops of the Level. Moves every single Drop
+     * contained in the level ({@link Level#sprites Drop array} in the Sprite array
+     * of the Level).
+     */
     private static void moveDrops() {
         for (int ii = 0; ii < levels[currentLevel].sprites[DROPS_INDEX].length; ii++) {
 
             levels[currentLevel].sprites[DROPS_INDEX][ii].move();
-            moveSprite(levels[currentLevel].sprites[DROPS_INDEX][ii].getID());
+            // moveSprite(levels[currentLevel].sprites[DROPS_INDEX][ii].getID());
         }
+    }
+
+    public static void movePlayer(String lastAction) {
+        // Checking its value. We are not controlling the borders.
+        // Notice that in the real game the movements should be of 1/10
+        // cell. There is a method to do it.
+        Player playerCopy = (Player) levels[currentLevel].sprites[0][0];
+
+        if (lastAction.equals("space")) {
+            playerCopy.putBomb(timer);
+        } else if (lastAction.equals("tab") && playerCopy.hasRemoteControl()) {
+            detonate();
+        } else {
+            levels[currentLevel].sprites[0][0].move(lastAction);
+        }
+
     }
 
     private static void enemiesAttacks() {
@@ -176,10 +215,9 @@ public class Main {
                 if (levels[currentLevel].sprites[i][j].getxPos() == playerCopy.getxPos()
                         && levels[currentLevel].sprites[i][j].getyPos() == playerCopy.getyPos()) {
                     // playerCopy.decrementHealth();
-                    visualBoard.gb_println("You have lost 20 points of health");
+                    // visualBoard.gb_println("You have lost 20 points of health");
                     visualBoard.gb_setValueHealthCurrent(playerCopy.getHealth());
-                    if (playerCopy.getHealth() == 0) {
-                        playerCopy.killed();
+                    if (!playerCopy.isAlive()) { // Player not alive
                         visualBoard.gb_setSpriteImage(0, playerCopy.getImage());
                         visualBoard.gb_println("You have been killed");
                     }
@@ -190,7 +228,7 @@ public class Main {
     }
 
     /**
-     * Prints the current situation of the Level
+     * Prints the current situation of the board of Level
      * 
      */
     public static void printBoard() {
@@ -201,9 +239,17 @@ public class Main {
                 } else if (levels[currentLevel].board[ii][jj].isMined()) {// Bomb placed in that block
                     visualBoard.gb_setSquareImage(ii, jj, Bomb.image);
                 } else {
-                    visualBoard.gb_setSquareImage(ii, jj, null);
+                    // Tries to load the image of the bonus contained, in the case it exists.
+                    try {
+                        visualBoard.gb_setSquareImage(ii, jj, levels[currentLevel].board[ii][jj].getBonus().getImage());
+                    } catch (Exception e) {
+                        visualBoard.gb_setSquareImage(ii, jj, null);
+                        /*
+                         * By calling 'gb_setSquareImage' with 'null', any image that were in this block
+                         * is removed.
+                         */
+                    }
                     visualBoard.gb_setSquareColor(ii, jj, NormalBlock.red, NormalBlock.green, NormalBlock.blue);
-
                 }
             }
         }
@@ -216,18 +262,35 @@ public class Main {
      *            ID of the sprite to add
      */
     public static void addSpriteByID(int id) {
-        Sprite currentSprite = Level.getSpriteByID(id);
+        Sprite currentSprite = levels[currentLevel].getSpriteByID(id);
         visualBoard.gb_addSprite(id, currentSprite.getImage(), true);
         moveSprite(id);
-        setVisible(id);
+        setVisible(id, true);
 
     }
 
+    /**
+     * Adds a new sprite to the visualBoard, and set it visible.
+     * 
+     * @param spriteToAdd
+     *            Sprite to add
+     */
     public static void addSprite(Sprite spriteToAdd) {
         visualBoard.gb_addSprite(spriteToAdd.getID(), spriteToAdd.getImage(), true);
         moveSprite(spriteToAdd.getID());
-        setVisible(spriteToAdd.getID());
+        setVisible(spriteToAdd.getID(), true);
 
+    }
+
+    /**
+     * Sets the visibility of the sprite to false, removing it from the visual
+     * board.
+     * 
+     * @param id
+     *            ID of the sprite
+     */
+    public static void removeSprite(int id) {
+        setVisible(id, false);
     }
 
     /**
@@ -236,8 +299,8 @@ public class Main {
      * @param id
      *            ID of the sprite
      */
-    public static void setVisible(int id) {
-        visualBoard.gb_setSpriteVisible(id, true);
+    public static void setVisible(int id, boolean visible) {
+        visualBoard.gb_setSpriteVisible(id, visible);
     }
 
     /**
@@ -259,12 +322,17 @@ public class Main {
      *            ID of the sprite
      */
     public static void moveSprite(int id) {
-        Sprite movingSprite = Level.getSpriteByID(id);
-        try {
-            visualBoard.gb_setSpriteImage(id, movingSprite.getImage());
-            visualBoard.gb_moveSprite(id, movingSprite.getxPos(), movingSprite.getyPos());
-        } catch (Exception e) {
-            e.printStackTrace();
+        Sprite movingSprite = levels[currentLevel].getSpriteByID(id);
+        visualBoard.gb_setSpriteImage(id, movingSprite.getImage());
+        visualBoard.gb_moveSpriteCoord(id, movingSprite.getxCoord(), movingSprite.getyCoord());
+    }
+
+    /**
+     * Moves ALL the sprites in the visual board.
+     */
+    public static void moveALLsprites() {
+        for (int id = 0; id < maxID; id++) {
+            moveSprite(id);
         }
     }
 
@@ -286,8 +354,8 @@ public class Main {
      */
     public static void detonate() {
         Player playerCopy = (Player) levels[currentLevel].sprites[PLAYER_INDEX][PLAYER_INDEX];
-        for (int i = 0; i < playerCopy.bombs.length; i++) {
-            playerCopy.bombs[i].detonate(timer);
+        for (int i = 0; i < playerCopy.getBombs().length; i++) {
+            playerCopy.getBombs()[i].detonate(timer, playerCopy.hasRemoteControl());
         }
     }
 
