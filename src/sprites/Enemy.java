@@ -10,13 +10,16 @@ package sprites;
  * @version 1.1
  */
 public abstract class Enemy extends Sprite {
-
-    // The xPos, yPos, and image are fields of the superclass Sprite, declared there
+    /**
+     * Number of health points (HP) the Player will loose when an enemy hits him.
+     */
     public static final byte attackDamage = 20;
 
     /**
-     * Boolean variable controlling if the enemy if alive (is has hp) or not (0 hp).
+     * Points that will be added to the {@link Player#score Player' score} when this
+     * enemy dies.
      */
+    protected int points;
 
     /**
      * Initializes the field id, calling the super constructor.
@@ -26,6 +29,14 @@ public abstract class Enemy extends Sprite {
      */
     public Enemy(int id) {
         super(id);
+    }
+
+    /**
+     * 
+     * @return The points
+     */
+    public int getPoints() {
+        return points;
     }
 
 }

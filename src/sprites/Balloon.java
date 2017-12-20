@@ -18,6 +18,20 @@ import structures.Level;
  */
 public class Balloon extends Enemy {
     /**
+     * Maximum speed reachable for a player
+     */
+    private final float BALLOON_MAX_SPEED = 1.0F;
+    /**
+     * Minimum speed reachable for a player
+     */
+    private final float BALLOON_MIN_SPEED = 0.1F;
+    
+    /**
+     * @see {@link Enemy#points}
+     */
+    private final int POINTS_BALLOON = 100;
+
+    /**
      * Constructor. Initializes a balloon in a random position (if that position is
      * available)
      * 
@@ -31,54 +45,73 @@ public class Balloon extends Enemy {
         image = "enemy111.png";
         alive = true;
         ownLevel = l;
+        setMax_speed(BALLOON_MAX_SPEED);
+        setMin_speed(BALLOON_MIN_SPEED);
+        points = POINTS_BALLOON;
 
         do {
             xPos = (int) (Math.random() * (Constants.BOARD_SIZE - 1) + 1);
             yPos = (int) (Math.random() * (Constants.BOARD_SIZE - 1) + 1);
 
-        } while (ownLevel.board[xPos][yPos].isAvailable() == false || (xPos == 1 && yPos == 1));
+        } while (!ownLevel.board[xPos][yPos].isAvailable() || (xPos == 1 && yPos == 1));
 
         xCoord = xPos;
         yCoord = yPos;
     }
 
     /**
-     * Method that moves randomly a Balloon
+     * Method that moves in a random direction a Balloon
      */
     @Override
     public void move() {
-        double copyX = Math.min((xCoord + 0.4), Constants.BOARD_SIZE), copyY = Math.min((yCoord + 0.8), Constants.BOARD_SIZE);
-        int randomNum = (int) (Math.random() * 4);
-        switch (randomNum) {
+        double copyX = Math.min((xCoord + 0.4), Constants.BOARD_SIZE);
+        double copyY = Math.min((yCoord + 0.8), Constants.BOARD_SIZE);
+        // Chooses a random direction
+        switch ((int) (Math.random() * 4)) {
         case 0: // moves to the right
-            if (ownLevel.board[(int)(copyX+0.2)][(int)(copyY)].isWalkable()) {
+            if (ownLevel.board[(int) (copyX + 0.2)][(int) (copyY)].isWalkable()) {
                 xCoord = xCoord + 0.2;
                 xPos = (int) (xCoord);
             }
             break;
         case 1: // moves to the left
-            if (ownLevel.board[(int)(copyX-0.2)][(int)(copyY)].isWalkable()) {
+            if (ownLevel.board[(int) (copyX - 0.2)][(int) (copyY)].isWalkable()) {
                 xCoord = xCoord - 0.2;
-                xPos = (int) (xCoord);            }
+                xPos = (int) (xCoord);
+            }
             break;
         case 2: // moves upwards
-            if (ownLevel.board[(int)(copyX)][(int)(copyY-0.2)].isWalkable()) {
+            if (ownLevel.board[(int) (copyX)][(int) (copyY - 0.2)].isWalkable()) {
                 yCoord = yCoord - 0.2;
-                yPos = (int) (yCoord);            }
+                yPos = (int) (yCoord);
+            }
             break;
         case 3: // moves downwards
-            if (ownLevel.board[(int)(copyX)][(int)(copyY+0.2)].isWalkable()) {
+            if (ownLevel.board[(int) (copyX)][(int) (copyY + 0.2)].isWalkable()) {
                 yCoord = yCoord + 0.2;
-                yPos = (int) (yCoord);            }
+                yPos = (int) (yCoord);
+            }
         }
 
     }
 
     /**
-     * Override method, it will call the method move() (without arguments)
+     * Implementation of the abstract method {@link Sprite#move(String)
+     * move(String)}. This method has no code because the movements do not depend on
+     * 'lastAction', instead the move is done with {@link Balloon#move()}.
      */
     @Override
     public void move(String lastAction) {
         move();
+    }
+
+    /**
+     * Sets the {@link Sprite#alive alive} to false.
+     */
+    @Override
+    public void killed() {
+        alive = false;
+        image = "enemy100.png";
+
     }
 }

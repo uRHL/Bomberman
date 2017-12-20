@@ -1,15 +1,14 @@
 package sprites;
 
 import structures.*;
-import blocks.*;
 
 /**
  * Represents a Player. As this class extends Sprite, every Player will have an
  * unique ID number, x and y positions, a collection of images, belongs to a
  * fixed level, and some Bombs.
  * 
- * @author RamÃ³n HernÃ¡ndez LeÃ³n. Bachelor Degree in Computer Science. UC3M
- * @author Miguel Espinosa MiÃ±ano. Bachelor Degree in Computer Science. UC3M
+ * @author Ramón Hernández León. Bachelor Degree in Computer Science. UC3M
+ * @author Miguel Espinosa Miñano. Bachelor Degree in Computer Science. UC3M
  * @since December, 6, 2017
  * @version 1.1
  */
@@ -19,16 +18,79 @@ public class Player extends Sprite {
      * bomb. It can be interpreted as a bag, the player can only use the bombs that
      * carries in the bag. The number of bombs can be incremented with bonuses.
      */
-    public Bomb[] bombs;
+    private Bomb[] bombs;
+    /**
+     * Storages if the player has the bonus {@link bonuses.RemoteControlBonus
+     * RemoteControl}.
+     */
+    private boolean remoteControl;
+
+    /**
+     * Number of points the player has. Points are obtained killing enemies.
+     */
+    private int score;
+
     /**
      * Variables used for changing the images of the player
      */
-    private int up = 0, down = 0, left = 0, right = 0;    
+    private int up = 0, down = 0, left = 0, right = 0;
+    /**
+     * Maximum speed reachable for a player
+     */
+    private final float PLAYER_MAX_SPEED = 1.0F;
+    /**
+     * Minimum speed reachable for a player
+     */
+    private final float PLAYER_MIN_SPEED = 0.1F;
+
+    /**
+     * 
+     * @return The remoteControl
+     */
+    public boolean hasRemoteControl() {
+        return remoteControl;
+    }
+
+    /**
+     * 
+     * @param remoteControl
+     *            RemoteControl to set
+     */
+    public void setRemoteControl(boolean remoteControl) {
+        this.remoteControl = remoteControl;
+    }
+
+    /**
+     * @return the score
+     */
+    public int getScore() {
+        return score;
+    }
+
+    /**
+     * Sets the score if the new value is higher than the current score.
+     * 
+     * @param score
+     *            the score to set
+     */
+    public void setScore(int score) {
+        if (score > this.score) {
+            this.score = score;
+        }
+    }
+
+    /**
+     * 
+     * @return the array of bombs
+     */
+    public Bomb[] getBombs() {
+        return bombs;
+    }
 
     /**
      * Constructor. Initializes the ID number ('super' constructor), the X-position
-     * and Y-position (1 by default), the image and the array of bombs, initily with
-     * one bomb.
+     * and Y-position (1 by default), the image and the array of bombs, initially
+     * with one bomb.
      * 
      * @param l
      *            Level were the Player exists.
@@ -37,14 +99,18 @@ public class Player extends Sprite {
      */
     public Player(Level l, int id) {
         super(id);
-        setAlive(true);
         xPos = 1;
         yPos = 1;
-        xCoord = 1.0;
-        yCoord = 1.0;
+        xCoord = (double) xPos;
+        yCoord = (double) yPos;
+        setMax_speed(PLAYER_MAX_SPEED);
+        setMin_speed(PLAYER_MIN_SPEED);
+        speed = 0.1F;
         image = "bomberman111.png";
         ownLevel = l;
-        health = 100;
+        super.setHp(100);
+        remoteControl = false;
+        score = 0;
         bombs = new Bomb[] { new Bomb() };
 
     }
@@ -54,9 +120,11 @@ public class Player extends Sprite {
      */
     @Override
     public void move(String lastAction) {
-        double copyX = Math.min((xCoord + 0.4), Constants.BOARD_SIZE), copyY = Math.min((yCoord + 0.8), Constants.BOARD_SIZE);
+        double copyX = Math.min((xCoord + 0.4), Constants.BOARD_SIZE);
+        double copyY = Math.min((yCoord + 0.8), Constants.BOARD_SIZE);
+
         if (alive) {
-            if (lastAction.equals("right") && ownLevel.board[(int)(copyX+0.2)][(int)(copyY)].isWalkable()) {
+            if (lastAction.equals("right") && ownLevel.board[(int) (copyX + 0.2)][(int) (copyY)].isWalkable()) {
                 if (right % 5 == 0) {
                     image = "bomberman131.png";
                 } else if ((right + 1) % 5 == 0) {
@@ -69,9 +137,9 @@ public class Player extends Sprite {
                     image = "bomberman135.png";
                 }
                 right++;
-                xCoord = xCoord + 0.2;
-                xPos = (int) (xCoord+0.5);
-            } else if (lastAction.equals("left") && ownLevel.board[(int)(copyX-0.2)][(int)(copyY)].isWalkable()) {
+                xCoord = xCoord + speed;
+                xPos = (int) (xCoord + 0.5);
+            } else if (lastAction.equals("left") && ownLevel.board[(int) (copyX - 0.2)][(int) (copyY)].isWalkable()) {
                 if (left % 5 == 0) {
                     image = "bomberman121.png";
                 } else if ((left + 1) % 5 == 0) {
@@ -84,9 +152,9 @@ public class Player extends Sprite {
                     image = "bomberman125.png";
                 }
                 left++;
-                xCoord = xCoord - 0.2;
-                xPos = (int) (xCoord+0.5);
-            } else if (lastAction.equals("up") && ownLevel.board[(int)(copyX)][(int)(copyY-0.2)].isWalkable()) {
+                xCoord = xCoord - speed;
+                xPos = (int) (xCoord + 0.5);
+            } else if (lastAction.equals("up") && ownLevel.board[(int) (copyX)][(int) (copyY - 0.2)].isWalkable()) {
                 if (up % 5 == 0) {
                     image = "bomberman101.png";
                 } else if ((up + 1) % 5 == 0) {
@@ -99,9 +167,9 @@ public class Player extends Sprite {
                     image = "bomberman105.png";
                 }
                 up++;
-                yCoord = yCoord - 0.2;
-                yPos = (int) (yCoord+0.5);
-            } else if (lastAction.equals("down") && ownLevel.board[(int)(copyX)][(int)(copyY+0.2)].isWalkable()) {
+                yCoord = yCoord - speed;
+                yPos = (int) (yCoord + 0.5);
+            } else if (lastAction.equals("down") && ownLevel.board[(int) (copyX)][(int) (copyY + 0.2)].isWalkable()) {
                 if (down % 5 == 0) {
                     image = "bomberman111.png";
                 } else if ((down + 1) % 5 == 0) {
@@ -114,9 +182,18 @@ public class Player extends Sprite {
                     image = "bomberman115.png";
                 }
                 down++;
-                yCoord = yCoord + 0.2;
-                yPos = (int) (yCoord+0.5);
+                yCoord = yCoord + speed;
+                yPos = (int) (yCoord + 0.5);
             }
+            try {
+                if (ownLevel.board[xPos][yPos].toString().equals("NormalBlock")) {
+                    ownLevel.board[xPos][yPos].getBonus().consumeBonus(this);
+                    ownLevel.board[xPos][yPos].setBonus(null);
+                }
+            } catch (Exception e) {
+                // No bonus founded
+            }
+
         }
     }
 
@@ -148,6 +225,18 @@ public class Player extends Sprite {
     }
 
     /**
+     * Adds a new bomb to the array of bombs. This means that the Player has one
+     * more bomb in his "belt", so it can place one more bomb at the same time
+     */
+    public void addBomb() {
+        Bomb[] newArray;
+        newArray = new Bomb[bombs.length + 1];
+        System.arraycopy(bombs, 0, newArray, 0, bombs.length);
+        newArray[bombs.length] = new Bomb();
+        bombs = newArray;
+    }
+
+    /**
      * Override method. It has NO implementation as the value of the last key
      * pressed is needed.
      */
@@ -162,7 +251,10 @@ public class Player extends Sprite {
     }
 
     public void decrementHealth() {
-        health -= Enemy.attackDamage;
-    }    
+        hp -= Enemy.attackDamage;
+        if (hp <= 0) {
+            killed();
+        }
+    }
 
 }
