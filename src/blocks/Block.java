@@ -150,8 +150,8 @@ public class Block {
      *            the bonus to set
      */
     public void setBonus(Bonus bonus) {
-        this.bonus = bonus;
-        if (bonus != null) {
+        this.bonus = bonus;        
+        if (this.bonus != null) {
             haveBonus = true;
         } else {
             haveBonus = false;
