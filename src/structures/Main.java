@@ -18,7 +18,7 @@ import edu.uc3m.game.GameBoardGUI;
  * @version 1.1
  */
 public class Main {
-    // See below for an explanation of throws InterruptedException    
+    // See below for an explanation of throws InterruptedException
     /**
      * Maximum ID reached at the moment, starting from 0, which is the 'player',
      * incremented by one for each new 'Sprite'
@@ -66,6 +66,11 @@ public class Main {
      */
     public static final byte DROPS_INDEX = 2;
     /**
+     * Datum used to simplify the access to the Player . It means the unique ID
+     * number of the player
+     */
+    public static final int PLAYER_ID = levels[currentLevel].sprites[PLAYER_INDEX][PLAYER_INDEX].getID();
+    /**
      * When it is true, all the bonuses are visible, although the block that
      * contains it has been destroyed or not.
      */
@@ -79,9 +84,8 @@ public class Main {
         // To make the board visible
         visualBoard.setVisible(true);
         printBoard();
-
-        // Changing the player name in the GUI
-        visualBoard.gb_setTextPlayerName("Bomberman");
+        initializeGBtext();
+        initializeSprites(); // Adding all the sprites for first time to the visualBoard
         // Adding a sprite to the board, it is done in three steps
         // 1) adding it. Parameters are a unique id, the file containing the
         // image and true if we want it to be on top of any other at the same
@@ -95,21 +99,10 @@ public class Main {
         // Main game loop. This will be executing until we finish. As an example
         // we use an infinite loop
 
-        initializeSprites(); // Adding all the sprites for first time to the visualBoard
-        visualBoard.gb_setValueHealthMax(Constants.MAX_HEALTH);
-        visualBoard.gb_setValueHealthCurrent(Constants.MAX_HEALTH);
-        visualBoard.gb_setTextAbility1("Range");
-        visualBoard.gb_setValueAbility1(Bomb.getRange());
-        visualBoard.gb_setTextAbility2("Speed");
-        visualBoard.gb_setValueAbility2((int) (levels[currentLevel].sprites[0][0].getSpeed() * 10));
-        visualBoard.gb_setTextPointsDown("Bombs");
-        visualBoard.gb_setValuePointsDown(((Player) (levels[currentLevel].sprites[0][0])).getBombs().length);
-        visualBoard.gb_setTextPointsUp("Points");
-        visualBoard.gb_setValuePointsUp(((Player) (levels[currentLevel].sprites[0][0])).getScore());
-        
         while (levels[currentLevel].sprites[0][0].isAlive()) { // The player stills alive
             timer = System.currentTimeMillis();
             printBoard();
+            refreshGBvalues();
             // The gb_getLastAction() method returns a String with the last
             // action the user performed in the GUI. Examples are "right", "up",
             // "space". See the documentation for more details.
@@ -144,7 +137,7 @@ public class Main {
                 moveDrops();
             }
             enemiesAttacks();
-            detonate();
+            detonate(false); // The argument false indicates that the option remote control is not able
             moveALLsprites();
             /*
              * This makes the program to pause for 50 milliseconds. If not this loop will
@@ -201,7 +194,7 @@ public class Main {
         if (lastAction.equals("space")) {
             playerCopy.putBomb(timer);
         } else if (lastAction.equals("tab") && playerCopy.hasRemoteControl()) {
-            detonate();
+            detonate(true);
         } else {
             levels[currentLevel].sprites[0][0].move(lastAction);
         }
@@ -209,7 +202,7 @@ public class Main {
     }
 
     private static void enemiesAttacks() {
-        Player playerCopy = (Player) levels[currentLevel].sprites[0][0];
+        Player playerCopy = (Player) levels[currentLevel].getSpriteByID(PLAYER_ID);
         for (int i = 1; i < levels[currentLevel].sprites.length; i++) {
             for (int j = 0; j < levels[currentLevel].sprites[i].length; j++) {
                 if (levels[currentLevel].sprites[i][j].getxPos() == playerCopy.getxPos()
@@ -253,6 +246,28 @@ public class Main {
                 }
             }
         }
+    }
+
+    public static void initializeGBtext() {
+        // Changing the player name in the GUI
+        visualBoard.gb_setTextPlayerName("Bomberman");
+        visualBoard.gb_setValueHealthMax(Constants.MAX_HEALTH);
+        visualBoard.gb_setTextAbility1("Range");
+        visualBoard.gb_setTextAbility2("Speed");
+        visualBoard.gb_setTextPointsDown("Bombs");
+        visualBoard.gb_setTextPointsUp("Points");
+        refreshGBvalues();
+
+    }
+
+    public static void refreshGBvalues() {
+        visualBoard.gb_setValueHealthCurrent(levels[currentLevel].getSpriteByID(PLAYER_ID).getHealth());
+        visualBoard.gb_setValueAbility1(Bomb.getRange());
+        // Speed is multiplied by 10 just to obtain a number easier to read
+        visualBoard.gb_setValueAbility2((int) (levels[currentLevel].getSpriteByID(PLAYER_ID).getSpeed() * 10));
+        visualBoard.gb_setValuePointsDown(
+                ((Player) (levels[currentLevel].getSpriteByID(PLAYER_ID))).getNumOfAvailableBombs());
+        visualBoard.gb_setValuePointsUp(((Player) (levels[currentLevel].getSpriteByID(PLAYER_ID))).getScore());
     }
 
     /**
@@ -352,10 +367,10 @@ public class Main {
      * Calls the method 'detonate' of the Bomb class for every bomb that the Player
      * has.
      */
-    public static void detonate() {
-        Player playerCopy = (Player) levels[currentLevel].sprites[PLAYER_INDEX][PLAYER_INDEX];
+    public static void detonate(boolean ableRemoteControl) {
+        Player playerCopy = (Player) levels[currentLevel].getSpriteByID(PLAYER_ID);
         for (int i = 0; i < playerCopy.getBombs().length; i++) {
-            playerCopy.getBombs()[i].detonate(timer, playerCopy.hasRemoteControl());
+            playerCopy.getBombs()[i].detonate(timer, ableRemoteControl);
         }
     }
 
