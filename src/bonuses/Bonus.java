@@ -44,7 +44,7 @@ public class Bonus {
      */
     public void setPlaced(boolean placed) {
         this.placed = placed;
-    }   
+    }
 
     /**
      * By default constructor
@@ -67,8 +67,10 @@ public class Bonus {
      * 
      * @param Player
      *            who had taken the bonus.
+     * @return True if the bonus had been consumed. False otherwise
      */
-    public void consumeBonus(Player owner) {        
+    public boolean consumeBonus(Player owner) {
+        return false;
     }
 
 }

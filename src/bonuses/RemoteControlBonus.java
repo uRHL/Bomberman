@@ -51,10 +51,14 @@ public class RemoteControlBonus extends Bonus {
      * 
      * @param owner
      *            Player who had taken the bonus
+     * @return True, because RemoteControlBonuses are always consumed when the
+     *         player gets them
      */
     @Override
-    public void consumeBonus(Player owner) {        
+    public boolean consumeBonus(Player owner) {
         owner.setRemoteControl(true);
         Main.visualBoard.gb_println("Remote control activated! Explode your bombs pressing tab");
+
+        return true;
     }
 }

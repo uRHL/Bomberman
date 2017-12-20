@@ -54,10 +54,14 @@ public class SpecialFireBonus extends Bonus {
      * @see Bomb#fullRange()
      * @param owner
      *            Player who had taken the bonus
+     * @return True, because SpecialFireBonuses are always consumed when the player
+     *         gets them
      */
     @Override
-    public void consumeBonus(Player owner) {        
+    public boolean consumeBonus(Player owner) {
         Bomb.fullRange();
         Main.visualBoard.gb_println("Your bombs are the most powerful!");
+
+        return true;
     }
 }

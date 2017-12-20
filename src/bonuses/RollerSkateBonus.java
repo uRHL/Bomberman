@@ -56,13 +56,16 @@ public class RollerSkateBonus extends Bonus {
      * @see {@link sprites.Sprite#setSpeed(float)}
      * @param owner
      *            Player who had taken the bonus
+     * @return True, because RollerSkateBonuses are always consumed when the player
+     *         gets them
      */
     @Override
-    public void consumeBonus(Player owner) {        
+    public boolean consumeBonus(Player owner) {
         if (owner.setSpeed(owner.getSpeed() + INCREMENT)) {
             Main.visualBoard.gb_println("You move faster now!");
         } else {
             Main.visualBoard.gb_println("You cannot move faster!");
         }
+        return true;
     }
 }

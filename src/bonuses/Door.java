@@ -1,6 +1,7 @@
 package bonuses;
 
-import sprites.Bomb;
+import blocks.BrickBlock;
+import sprites.Enemy;
 import sprites.Player;
 import structures.Main;
 
@@ -13,11 +14,13 @@ import structures.Main;
  * @since December, 6, 2017
  * @version 1.1
  */
-public class BombBonus extends Bonus {
+
+public class Door extends Bonus {
+
     /**
      * Image representing the bonus
      */
-    public static final String image = "Bombupsprite.png";
+    public static final String image = "DoorClosed.png";
 
     /**
      * Probability of the bonus appearing in a level, if the level can contain a
@@ -36,7 +39,7 @@ public class BombBonus extends Bonus {
     /**
      * By default constructor
      */
-    public BombBonus() {
+    public Door() {
 
     }
 
@@ -48,20 +51,23 @@ public class BombBonus extends Bonus {
     }
 
     /**
-     * Consumes a {@link BombBonus}, adding one extra {@link Bomb} for the player
+     * Tries to go through the level's {@link Door}. In order to do so, all the
+     * {@link Enemy enemies} must be dead, and the {@link BrickBlock} containing the
+     * Door destroyed.
      * 
-     * @see {@link sprites.Player#addBomb()}
+     * 
      * @param owner
      *            Player who had taken the bonus
-     * @return True, because BombBonuses are always consumed when the player gets
-     *         them
+     * @return True if the Player was able to go through the door. False if not
      */
     @Override
     public boolean consumeBonus(Player owner) {
-        owner.addBomb();
-        Main.visualBoard.gb_println("You have one extra bomb!");
-        Main.visualBoard.gb_setValuePointsDown(owner.getBombs().length);
-
-        return true;
+        if (owner.getOwnLevel().allEnemiesDead()) {
+            Main.nextLevel();
+            return true;
+        } else {
+            Main.visualBoard.gb_println("All the enemies must die first!");
+            return false;
+        }
     }
 }

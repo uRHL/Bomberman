@@ -54,13 +54,16 @@ public class FireBonus extends Bonus {
      * 
      * @param owner
      *            Player who had taken the bonus
+     * @return True, because FireBonuses are always consumed when the player gets
+     *         them
      */
     @Override
-    public void consumeBonus(Player owner) {
+    public boolean consumeBonus(Player owner) {
         if (Bomb.incrementRange()) {
             Main.visualBoard.gb_println("Your bombs are now more powerful!");
-        }else {
+        } else {
             Main.visualBoard.gb_println("Your bombs are the most powerful!");
         }
+        return true;
     }
 }

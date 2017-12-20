@@ -51,10 +51,15 @@ public class GetaBonus extends Bonus {
      * 
      * @param owner
      *            Player who had taken the bonus
+     * @return True, because GetaBonuses are always consumed when the player gets
+     *         them
      */
     @Override
-    public void consumeBonus(Player owner) {        
+    public boolean consumeBonus(Player owner) {
         owner.setSpeed(owner.getMin_speed());
         Main.visualBoard.gb_println("Your speed has been reduced to its minimum!");
+
+        return true;
+
     }
 }
