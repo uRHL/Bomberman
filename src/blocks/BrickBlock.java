@@ -20,8 +20,7 @@ public class BrickBlock extends Block {
      * Constructor. Initializes all the blocks with the same properties: same image,
      * walkable false (the player cannot walk through it), available false (bombs
      * cannot be placed on a block of this type), breakable true (bombs can destroy
-     * this type of block). In addition, if the block contains a bonus is set
-     * randomly
+     * this type of block)and no initial bonus.
      * 
      */
     public BrickBlock() {
@@ -29,8 +28,8 @@ public class BrickBlock extends Block {
         setWalkable(false);
         setAvailable(false);
         setBreakable(true);
-        bonus = null;
+        setBonus(null);
 
-    }    
+    }
 
 }

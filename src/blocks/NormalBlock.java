@@ -58,7 +58,7 @@ public class NormalBlock extends Block {
         setMined(false);
         setBreakable(true);
         image = null;
-        bonus = null;
+        setBonus(null);
     }
 
     /**
@@ -73,7 +73,7 @@ public class NormalBlock extends Block {
         setMined(false);
         setBreakable(true);
         image = null;
-        this.bonus = bonus;
+        setBonus(bonus);
     }
 
 }
