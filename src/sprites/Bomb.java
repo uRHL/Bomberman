@@ -17,7 +17,7 @@ public class Bomb {
     /**
      * Possible images for a bomb
      */
-    public static final String[] images = new String[] { "bomb1.gif", "bomb2.gif" };
+    private static final String[] images = new String[] { "bomb1.gif", "bomb2.gif" };
     /**
      * Current image representing a bomb, initialized with the first possible image.
      */
@@ -69,7 +69,7 @@ public class Bomb {
      * By default constructor
      */
     public Bomb() {
-
+        placed = false;
     }
 
     /**
@@ -161,7 +161,7 @@ public class Bomb {
     /**
      * Swaps automatically the image of the bomb, animating it.
      */
-    public void animateImage() {
+    public static void animateImage() {
         if (image.equals(images[0])) {
             image = images[1];
         } else {
@@ -181,7 +181,6 @@ public class Bomb {
      * @return True if had passed enough time to detonate. False otherwise
      */
     public void detonate(long timer, boolean ableRemoteControl) {
-        animateImage();
         if (ableRemoteControl || timer > this.initialTime + COUNT_DOWN) {
             if (this.isPlaced()) {
                 explode();
@@ -207,6 +206,7 @@ public class Bomb {
             for (int i = xPos; i <= xPos + range && i < Constants.BOARD_SIZE; i++) {
                 if (ownLevel.board[i][yPos].isBreakable()) {
                     ownLevel.board[i][yPos] = new NormalBlock(ownLevel.board[i][yPos].getBonus());
+                    damage(i, yPos);
 
                 }
             }
@@ -216,6 +216,7 @@ public class Bomb {
             for (int i = xPos; i >= xPos - range && i > 0; i--) {
                 if (ownLevel.board[i][yPos].isBreakable()) {
                     ownLevel.board[i][yPos] = new NormalBlock(ownLevel.board[i][yPos].getBonus());
+                    damage(i, yPos);
                 }
             }
         }
@@ -224,6 +225,7 @@ public class Bomb {
             for (int i = yPos; i <= yPos + range && i > 0; i++) {
                 if (ownLevel.board[xPos][i].isBreakable()) {
                     ownLevel.board[xPos][i] = new NormalBlock(ownLevel.board[xPos][i].getBonus());
+                    damage(xPos, i);
                 }
             }
         }
@@ -232,6 +234,23 @@ public class Bomb {
             for (int i = yPos; i >= yPos - range && i < Constants.BOARD_SIZE; i--) {
                 if (ownLevel.board[xPos][i].isBreakable()) {
                     ownLevel.board[xPos][i] = new NormalBlock(ownLevel.board[xPos][i].getBonus());
+                    damage(xPos, i);
+                }
+            }
+        }
+    }
+
+    private void damage(int xPos, int yPos) {
+        for (int i = 0; i < Main.maxID; i++) {
+            if (ownLevel.getSpriteByID(i).xPos == xPos && ownLevel.getSpriteByID(i).yPos == yPos) {
+                ownLevel.getSpriteByID(i).setHp(0);
+                if (i == 0) { // The player had been harmed
+                    Main.visualBoard.gb_println("You have killed yourself!!");
+                } else {
+                    ((Player) (ownLevel.getSpriteByID(Main.PLAYER_ID)))
+                            .addScore(((Enemy) (ownLevel.getSpriteByID(i))).getPoints());
+                    Main.visualBoard.gb_println("You have killed the enemy " + i + ". You won "
+                            + ((Enemy) (ownLevel.getSpriteByID(i))).getPoints() + " points");
                 }
             }
         }

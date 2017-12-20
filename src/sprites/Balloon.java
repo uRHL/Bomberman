@@ -25,7 +25,7 @@ public class Balloon extends Enemy {
      * Minimum speed reachable for a player
      */
     private final float BALLOON_MIN_SPEED = 0.1F;
-    
+
     /**
      * @see {@link Enemy#points}
      */
@@ -42,12 +42,16 @@ public class Balloon extends Enemy {
      */
     public Balloon(Level l, int id) {
         super(id);
-        image = "enemy111.png";
-        alive = true;
+        image = "enemy111.png";        
         ownLevel = l;
         setMax_speed(BALLOON_MAX_SPEED);
         setMin_speed(BALLOON_MIN_SPEED);
         points = POINTS_BALLOON;
+        /*
+         * Setting the hp. 1 is enough because the hp of the enemies does not really
+         * matter, since the explosion of one bomb will always kill them
+         */
+        setHp(1);
 
         do {
             xPos = (int) (Math.random() * (Constants.BOARD_SIZE - 1) + 1);
@@ -92,7 +96,6 @@ public class Balloon extends Enemy {
                 yPos = (int) (yCoord);
             }
         }
-
     }
 
     /**

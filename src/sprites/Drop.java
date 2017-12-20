@@ -28,12 +28,16 @@ public class Drop extends Enemy {
      */
     public Drop(Level l, int id) {
         super(id);
-        image = "enemy211.png";
-        alive = true;
+        image = "enemy211.png";        
         ownLevel = l;
         setMax_speed(DROP_MAX_SPEED);
         setMin_speed(DROP_MIN_SPEED);
         points = POINTS_DROP;
+        /*
+         * Setting the hp. 1 is enough because the hp of the enemies does not really
+         * matter, since the explosion of one bomb will always kill them
+         */
+        setHp(1);
 
         do {
             xPos = (int) (Math.random() * (Constants.BOARD_SIZE - 1) + 1);

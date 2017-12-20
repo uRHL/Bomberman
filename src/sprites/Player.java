@@ -80,11 +80,37 @@ public class Player extends Sprite {
     }
 
     /**
+     * Adds a {@link Enemy#points determined number of points} to the player' score
+     * 
+     * @param points
+     *            Points added
+     */
+    public void addScore(int points) {
+        setScore(getScore() + points);
+    }
+
+    /**
      * 
      * @return the array of bombs
      */
     public Bomb[] getBombs() {
         return bombs;
+    }
+
+    /**
+     * Gets the number of bombs available.
+     * 
+     * @return The number of bombs in the {@link Player#bombs array of bombs} that
+     *         have not been placed
+     */
+    public int getNumOfAvailableBombs() {
+        int availableBombs = 0;
+        for (int i = 0; i < bombs.length; i++) {
+            if (!bombs[i].isPlaced()) {
+                availableBombs++;
+            }
+        }
+        return availableBombs;
     }
 
     /**
@@ -186,9 +212,12 @@ public class Player extends Sprite {
                 yPos = (int) (yCoord + 0.5);
             }
             try {
+                // If the bonus is not in a NormalBlock it is unreachable
                 if (ownLevel.board[xPos][yPos].toString().equals("NormalBlock")) {
-                    ownLevel.board[xPos][yPos].getBonus().consumeBonus(this);
-                    ownLevel.board[xPos][yPos].setBonus(null);
+                    if (ownLevel.board[xPos][yPos].getBonus().consumeBonus(this)) {
+                        // If the bonus was consumed successfully, eliminate it
+                        ownLevel.board[xPos][yPos].setBonus(null);
+                    }
                 }
             } catch (Exception e) {
                 // No bonus founded
@@ -219,6 +248,7 @@ public class Player extends Sprite {
                     ownLevel.board[xPos][yPos].setAvailable(false);
                     ownLevel.board[xPos][yPos].setWalkable(true);
                     ownLevel.board[xPos][yPos].setMined(true);
+                    break;
                 }
             }
         }

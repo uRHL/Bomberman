@@ -54,7 +54,7 @@ public abstract class Sprite {
     /**
      * Level where this sprite exists
      */
-    Level ownLevel;
+    protected Level ownLevel;
     /**
      * Storages if the sprite is alive ({@link Sprite#hp hp}>0), or not
      * ({@link Sprite#hp hp}<=0).
@@ -126,12 +126,15 @@ public abstract class Sprite {
         return ID;
     }
 
-    public byte getHealth() {
-        return hp;
+    /**
+     * @return the ownLevel
+     */
+    public Level getOwnLevel() {
+        return ownLevel;
     }
 
-    public boolean isAlive() {
-        return alive;
+    public byte getHealth() {
+        return hp;
     }
 
     /**
@@ -147,6 +150,14 @@ public abstract class Sprite {
         } else {
             alive = false;
         }
+    }
+
+    /**
+     * 
+     * @return The alive
+     */
+    public boolean isAlive() {
+        return alive;
     }
 
     /**
@@ -166,7 +177,7 @@ public abstract class Sprite {
         if (speed >= this.min_speed && speed <= this.max_speed) {
             this.speed = speed;
             changed = true;
-            Main.visualBoard.gb_setValueAbility2((int) (this.speed*10));
+            Main.visualBoard.gb_setValueAbility2((int) (this.speed * 10));
         }
         return changed;
     }
