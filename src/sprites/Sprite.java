@@ -99,7 +99,7 @@ public abstract class Sprite {
      * @return The X-axis coordinates on the visual board
      */
     public int getxCoord() {
-        return (int) (xCoord * 10);
+        return (int)(xCoord*10);
     }
 
     /**
@@ -107,7 +107,7 @@ public abstract class Sprite {
      * @return The Y-axis coordinates on the visual board
      */
     public int getyCoord() {
-        return (int) (yCoord * 10);
+        return (int)(yCoord*10);
     }
 
     /**

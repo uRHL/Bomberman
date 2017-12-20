@@ -11,7 +11,10 @@ public class Drop extends Enemy {
      * Minimum speed reachable for a player
      */
     private final float DROP_MIN_SPEED = 0.1F;
-
+    /**
+     * Variables used for changing the images of the drop
+     */
+    private int up = 0, down = 0, left = 0, right = 0;
     /**
      * @see {@link Enemy#points}
      */
@@ -32,6 +35,7 @@ public class Drop extends Enemy {
         ownLevel = l;
         setMax_speed(DROP_MAX_SPEED);
         setMin_speed(DROP_MIN_SPEED);
+        speed = 0.1F;
         points = POINTS_DROP;
         /*
          * Setting the hp. 1 is enough because the hp of the enemies does not really
@@ -57,18 +61,58 @@ public class Drop extends Enemy {
         double copyY = Math.min((yCoord + 0.8), Constants.BOARD_SIZE);
         int playerXpos = ownLevel.sprites[0][0].getxPos();
         int playerYpos = ownLevel.sprites[0][0].getyPos();
-        if (ownLevel.board[(int) (copyX + 0.2)][(int) (copyY)].isWalkable() && playerXpos > xPos) {
+        if (ownLevel.board[(int)(copyX+speed)][(int)(copyY)].isWalkable() && playerXpos > xPos) {
+        	if (right % 4 == 0) {
+                image = "enemy222.png";
+            } else if ((right + 1) % 4 == 0) {
+                image = "enemy221.png";
+            } else if ((right + 2) % 4 == 0) {
+                image = "enemy223.png";
+            } else if ((right + 3) % 4 == 0) {
+            	image = "enemy221.png";
+            }
+            right++;
             xCoord = xCoord + 0.2;
-            xPos = (int) (xCoord);
-        } else if (ownLevel.board[(int) (copyX - 0.2)][(int) (copyY)].isWalkable() && playerXpos < xPos) {
+            xPos = (int) (xCoord+0.5);
+        } else if (ownLevel.board[(int) (copyX - 0.2)][(int) (copyY)].isWalkable() && playerXpos < xPos)  {
+        	if (left % 4 == 0) {
+                image = "enemy212.png";
+            } else if ((left + 1) % 4 == 0) {
+                image = "enemy211.png";
+            } else if ((left + 2) % 4 == 0) {
+                image = "enemy213.png";
+            } else if ((left + 3) % 4 == 0) {
+            	image = "enemy211.png";
+            }
+            left++;
             xCoord = xCoord - 0.2;
-            xPos = (int) (xCoord);
-        } else if (ownLevel.board[(int) (copyX)][(int) (copyY - 0.2)].isWalkable() && playerYpos < yPos) {
+            xPos = (int) (xCoord+0.5);
+        } else if (ownLevel.board[(int) (copyX)][(int) (copyY - 0.2)].isWalkable() && playerYpos <= yPos) {
+        	if (up % 4 == 0) {
+                image = "enemy212.png";
+            } else if ((up + 1) % 4 == 0) {
+                image = "enemy211.png";
+            } else if ((up + 2) % 4 == 0) {
+                image = "enemy213.png";
+            } else if ((up + 3) % 4 == 0) {
+            	image = "enemy211.png";
+            }
+            up++;
             yCoord = yCoord - 0.2;
-            yPos = (int) (yCoord);
-        } else if (ownLevel.board[(int) (copyX)][(int) (copyY - 0.2)].isWalkable() && playerYpos > yPos) {
+            yPos = (int) (yCoord+0.5);
+        } else if (ownLevel.board[(int) (copyX)][(int) (copyY - 0.2)].isWalkable() && playerYpos >= yPos) {
+        	if (down % 4 == 0) {
+                image = "enemy222.png";
+            } else if ((down + 1) % 4 == 0) {
+                image = "enemy221.png";
+            } else if ((down + 2) % 4 == 0) {
+                image = "enemy223.png";
+            } else if ((down + 3) % 4 == 0) {
+            	image = "enemy221.png";
+            }
+            down++;
             yCoord = yCoord + 0.2;
-            yPos = (int) (yCoord);
+            yPos = (int) (yCoord+0.5);
         }
     }
 

@@ -29,6 +29,9 @@ public class Main {
      * Graphic representation of the level. GameBoardGUI class contains its own
      * methods to print and set messages.
      */
+    
+//    public static GameBoardGUI visualBoard_intro = new GameBoardGUI(30, 30);
+    
     public static GameBoardGUI visualBoard = new GameBoardGUI(Constants.BOARD_SIZE, Constants.BOARD_SIZE);
 
     /**
@@ -97,7 +100,8 @@ public class Main {
         // Main game loop. This will be executing until we finish. As an example
         // we use an infinite loop
 
-        while (levels[currentLevel].sprites[0][0].isAlive()) { // The player stills alive
+        
+        while (levels[currentLevel].sprites[0][0].isAlive()) { // The player is still alive
             timer = System.currentTimeMillis();
             printBoard();
             refreshGBvalues();
@@ -196,7 +200,6 @@ public class Main {
         } else {
             levels[currentLevel].sprites[0][0].move(lastAction);
         }
-
     }
 
     private static void enemiesAttacks() {
@@ -205,12 +208,13 @@ public class Main {
             for (int j = 0; j < levels[currentLevel].sprites[i].length; j++) {
                 if (levels[currentLevel].sprites[i][j].getxPos() == playerCopy.getxPos()
                         && levels[currentLevel].sprites[i][j].getyPos() == playerCopy.getyPos()) {
-                    // playerCopy.decrementHealth();
-                    // visualBoard.gb_println("You have lost 20 points of health");
+                    playerCopy.decrementHealth();
+                    visualBoard.gb_println("You have lost 20 points of health");
                     visualBoard.gb_setValueHealthCurrent(playerCopy.getHealth());
                     if (!playerCopy.isAlive()) { // Player not alive
                         visualBoard.gb_setSpriteImage(0, playerCopy.getImage());
                         visualBoard.gb_println("You have been killed");
+                        visualBoard.gb_showMessageDialog("GAME OVER" + "\n" + "Try again");
                     }
 
                 }
@@ -355,7 +359,7 @@ public class Main {
         Sprite movingSprite = levels[currentLevel].getSpriteByID(id);
         if (movingSprite.isAlive()) {
             visualBoard.gb_setSpriteImage(id, movingSprite.getImage());
-            visualBoard.gb_moveSpriteCoord(id, movingSprite.getxCoord(), movingSprite.getyCoord());
+            visualBoard.gb_moveSpriteCoord(id,movingSprite.getxCoord(), movingSprite.getyCoord());
         } else {
             // The sprite is not alive, therefore it will be eliminated from the board.
             setVisible(id, false);
