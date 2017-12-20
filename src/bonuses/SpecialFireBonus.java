@@ -1,6 +1,10 @@
 
 package bonuses;
 
+import sprites.Bomb;
+import sprites.Player;
+import structures.Main;
+
 /**
  * Increases the {@link sprites.Bomb#range explosion range} to its maximum (5
  * cells). There is one every 5 levels.
@@ -41,5 +45,19 @@ public class SpecialFireBonus extends Bonus {
      */
     public String getImage() {
         return image;
+    }
+
+    /**
+     * Consumes a {@link SpecialFireBonus}, setting the range of the {@link Bomb} to
+     * its {@link sprites.Bomb#MAX_RANGE maximum}
+     * 
+     * @see Bomb#fullRange()
+     * @param owner
+     *            Player who had taken the bonus
+     */
+    @Override
+    public void consumeBonus(Player owner) {        
+        Bomb.fullRange();
+        Main.visualBoard.gb_println("Your bombs are the most powerful!");
     }
 }

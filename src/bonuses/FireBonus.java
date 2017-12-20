@@ -1,5 +1,9 @@
 package bonuses;
 
+import sprites.Bomb;
+import sprites.Player;
+import structures.Main;
+
 /**
  * Increases the {@link sprites.Bomb#range explosion range} by one unit. There
  * is one per level.
@@ -40,5 +44,23 @@ public class FireBonus extends Bonus {
      */
     public String getImage() {
         return image;
+    }
+
+    /**
+     * Consumes a {@link FireBonus}, incrementing by one the
+     * {@link sprites.Bomb#range range} of the bombs.
+     * 
+     * @see {@link sprites.Bomb#incrementRange()}
+     * 
+     * @param owner
+     *            Player who had taken the bonus
+     */
+    @Override
+    public void consumeBonus(Player owner) {
+        if (Bomb.incrementRange()) {
+            Main.visualBoard.gb_println("Your bombs are now more powerful!");
+        }else {
+            Main.visualBoard.gb_println("Your bombs are the most powerful!");
+        }
     }
 }
