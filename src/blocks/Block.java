@@ -46,6 +46,11 @@ public class Block {
     protected Bonus bonus;
 
     /**
+     * Storages if the block already contains a block or not.
+     */
+    protected boolean haveBonus;
+
+    /**
      * 
      * @return the 'breakable'
      */
@@ -146,6 +151,19 @@ public class Block {
      */
     public void setBonus(Bonus bonus) {
         this.bonus = bonus;
+        if (bonus != null) {
+            haveBonus = true;
+        } else {
+            haveBonus = false;
+        }
+    }
+
+    /**
+     * 
+     * @return the haveBonus
+     */
+    public boolean doHaveBonus() {
+        return haveBonus;
     }
 
     /**
