@@ -1,5 +1,7 @@
 package bonuses;
 
+import sprites.Player;
+
 /**
  * Bonus class represent a bonus that might be inside a BrickBlock and will
  * appear once that block had been destroyed, with a bomb.
@@ -15,7 +17,7 @@ public class Bonus {
      * Boolean datum storing if the bonus has been already associated with a brick
      * (true) or not (false).
      */
-    protected boolean used = false;
+    protected boolean placed = false;
 
     /**
      * Returns the corresponding image of the bonus. If a simple 'Bonus' calls this
@@ -30,25 +32,43 @@ public class Bonus {
 
     /**
      * 
-     * @return the used
+     * @return the placed
      */
-    public boolean isUsed() {
-        return used;
+    public boolean isPlaced() {
+        return placed;
     }
 
     /**
-     * @param used
+     * @param placed
      *            the used to set
      */
-    public void setUsed(boolean used) {
-        this.used = used;
-    }
+    public void setPlaced(boolean placed) {
+        this.placed = placed;
+    }   
 
     /**
      * By default constructor
      */
     public Bonus() {
 
+    }
+
+    /**
+     * Gets the simple name of the calling class.
+     * 
+     * @return The name of class
+     */
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
+
+    /**
+     * Gets and apply the effect of the bonus to the Player that had taken it.
+     * 
+     * @param Player
+     *            who had taken the bonus.
+     */
+    public void consumeBonus(Player owner) {        
     }
 
 }

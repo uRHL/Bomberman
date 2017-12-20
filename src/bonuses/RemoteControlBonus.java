@@ -1,5 +1,8 @@
 package bonuses;
 
+import sprites.Player;
+import structures.Main;
+
 /**
  * Allows for the simultaneous and immediate explosion of all the bombs in the
  * board using the "tab" key. There is one every 10 levels.
@@ -40,5 +43,18 @@ public class RemoteControlBonus extends Bonus {
      */
     public String getImage() {
         return image;
+    }
+
+    /**
+     * Consumes a {@link RemoteControlBonus}, activating the
+     * {@link sprites.Player#remoteControl remote control skill}
+     * 
+     * @param owner
+     *            Player who had taken the bonus
+     */
+    @Override
+    public void consumeBonus(Player owner) {        
+        owner.setRemoteControl(true);
+        Main.visualBoard.gb_println("Remote control activated! Explode your bombs pressing tab");
     }
 }

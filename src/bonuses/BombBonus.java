@@ -1,5 +1,9 @@
 package bonuses;
 
+import sprites.Bomb;
+import sprites.Player;
+import structures.Main;
+
 /**
  * Increases by one the number of simultaneous bombs. Several of them can be
  * found at every level.
@@ -13,7 +17,7 @@ public class BombBonus extends Bonus {
     /**
      * Image representing the bonus
      */
-    public static final String image = "bomb1.gif";
+    public static final String image = "Bombupsprite.png";
 
     /**
      * Probability of the bonus appearing in a level, if the level can contain a
@@ -41,5 +45,19 @@ public class BombBonus extends Bonus {
      */
     public String getImage() {
         return image;
+    }
+
+    /**
+     * Consumes a {@link BombBonus}, adding one extra {@link Bomb} for the player
+     * 
+     * @see {@link sprites.Player#addBomb()}
+     * @param owner
+     *            Player who had taken the bonus
+     */
+    @Override
+    public void consumeBonus(Player owner) {        
+        owner.addBomb();
+        Main.visualBoard.gb_println("You have one extra bomb!");
+        Main.visualBoard.gb_setValuePointsDown(owner.getBombs().length);
     }
 }

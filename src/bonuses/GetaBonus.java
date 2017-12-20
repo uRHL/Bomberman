@@ -1,5 +1,8 @@
 package bonuses;
 
+import sprites.Player;
+import structures.Main;
+
 /**
  * Reduces the player speed to its minimum (1/10 of cell). It can randomly
  * appear (20% chance) on each level.
@@ -40,5 +43,18 @@ public class GetaBonus extends Bonus {
      */
     public String getImage() {
         return image;
+    }
+
+    /**
+     * Consumes a {@link GetaBonus}, setting the {@link sprites.Sprite#speed speed}
+     * of the player to its minimum.
+     * 
+     * @param owner
+     *            Player who had taken the bonus
+     */
+    @Override
+    public void consumeBonus(Player owner) {        
+        owner.setSpeed(owner.getMin_speed());
+        Main.visualBoard.gb_println("Your speed has been reduced to its minimum!");
     }
 }
