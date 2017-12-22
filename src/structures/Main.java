@@ -189,6 +189,12 @@ public class Main {
     }
 
     /**
+     * Function to move the player depending on the last action entered.
+     * If that was clicking the space, we will call the method putBomb.
+     * If instead it was clicking the tab and we had the remote control bonus,
+     * then we would call the detonate method. If none of these conditions were satisfied and 
+     * the player health was above 0, we would simply move the player according
+     * to the last action that was performed.
      * 
      * @param lastAction
      */
@@ -207,7 +213,10 @@ public class Main {
     }
     
     /**
-     * 
+     * Function to check that the enemies that are still alive are not in the same
+     * cell as the player. If so, decrement the health of the player.
+     * If the player is not alive, then print that he has been killed and that the game 
+     * is over. 
      */
     private static void enemiesAttacks() {
         Player playerCopy = (Player) levels[currentLevel].getSpriteByID(PLAYER_ID);
