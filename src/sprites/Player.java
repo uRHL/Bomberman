@@ -32,8 +32,10 @@ public class Player extends Sprite {
 
     /**
      * Variables used for changing the images of the player
+     * and creating its animation
      */
-    private int up = 0, down = 0, left = 0, right = 0;
+    private int up = 0, down = 0, left = 0, right = 0, kill = 0;
+
     /**
      * Maximum speed reachable for a player
      */
@@ -143,6 +145,7 @@ public class Player extends Sprite {
 
     /**
      * Override method to move the player depending on the last key pressed.
+     * Animation implemented
      */
     @Override
     public void move(String lastAction) {
@@ -150,6 +153,7 @@ public class Player extends Sprite {
         double copyY = Math.min((yCoord + 0.8), Constants.BOARD_SIZE);
 
         if (alive) {
+        	// moves to the right
             if (lastAction.equals("right") && ownLevel.board[(int) (copyX + 0.2)][(int) (copyY)].isWalkable()) {
                 if (right % 5 == 0) {
                     image = "bomberman131.png";
@@ -165,7 +169,8 @@ public class Player extends Sprite {
                 right++;
                 xCoord = xCoord + speed;
                 xPos = (int) (xCoord + 0.5);
-            } else if (lastAction.equals("left") && ownLevel.board[(int) (copyX - 0.2)][(int) (copyY)].isWalkable()) {
+            } // moves to the left
+            else if (lastAction.equals("left") && ownLevel.board[(int) (copyX - 0.2)][(int) (copyY)].isWalkable()) {
                 if (left % 5 == 0) {
                     image = "bomberman121.png";
                 } else if ((left + 1) % 5 == 0) {
@@ -180,7 +185,8 @@ public class Player extends Sprite {
                 left++;
                 xCoord = xCoord - speed;
                 xPos = (int) (xCoord + 0.5);
-            } else if (lastAction.equals("up") && ownLevel.board[(int) (copyX)][(int) (copyY - 0.2)].isWalkable()) {
+            } // moves up
+            else if (lastAction.equals("up") && ownLevel.board[(int) (copyX)][(int) (copyY - 0.2)].isWalkable()) {
                 if (up % 5 == 0) {
                     image = "bomberman101.png";
                 } else if ((up + 1) % 5 == 0) {
@@ -195,7 +201,8 @@ public class Player extends Sprite {
                 up++;
                 yCoord = yCoord - speed;
                 yPos = (int) (yCoord + 0.5);
-            } else if (lastAction.equals("down") && ownLevel.board[(int) (copyX)][(int) (copyY + 0.2)].isWalkable()) {
+            } // moves down
+            else if (lastAction.equals("down") && ownLevel.board[(int) (copyX)][(int) (copyY + 0.2)].isWalkable()) {
                 if (down % 5 == 0) {
                     image = "bomberman111.png";
                 } else if ((down + 1) % 5 == 0) {
@@ -275,16 +282,58 @@ public class Player extends Sprite {
 
     }
 
+    /**
+     * Method used for generating the animation of the player's death.
+     * Calls killed() after animation is performed. 
+     */
+    public void killing() {
+    	if (kill%5 == 0) {
+    		image = "bomberman141.png";
+    		kill++;
+    	} else if((kill+4)%5==0) {
+    		image = "bomberman142.png";
+    		kill++;
+    	} else if((kill+3)%5==0) {
+    		image = "bomberman143.png";
+    		kill++;
+    	} else if((kill+2)%5==0) {
+    		image = "bomberman144.png";
+    		kill++;
+    	} else if((kill+1)%5==0) {
+    		image = "bomberman145.png";
+    		kill++;
+    		killed();
+    	}
+    }
+    
+    /**
+     * Kills the player by changing boolean alive to false.
+     */
     public void killed() {
         alive = false;
-        image = "bomberman141.png";
     }
 
-    public void decrementHealth() {
-        hp -= Enemy.attackDamage;
-        if (hp <= 0) {
-            killed();
+    /**
+     * Decrements the health of the player depending on the attackDamage of the enemy.
+     * The reason why we only decrement it when the timer is divisible by four is to avoid 
+     * decreasing the player health too quickly.
+     * If the health points is zero, we call killing() to animate death of player and kill it.
+     * 
+     * @param timer
+     * 			gives the current time in milliseconds. Used for avoiding a fast health decrement
+     */
+    public void decrementHealth(long timer) {
+    	if (hp <= 0) {
+            killing();
         }
+    	else if (timer%4==0) {
+    		hp -= Enemy.attackDamage;
+        	Main.visualBoard.gb_println("You have lost 20 points of health");
+        	if (hp <= 0) {
+                killing();
+            }
+    	}
+    	
     }
 
 }

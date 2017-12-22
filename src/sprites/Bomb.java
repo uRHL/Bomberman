@@ -25,7 +25,7 @@ public class Bomb {
 	/**
 	 * Variables used for changing the images of the bomb
 	 */
-	private int up = 0, up1 = 0, down = 0, down1 = 0, left = 0, left1 = 0, right = 0, right1 = 0, centre = 0;
+	private int up = 0, up1 = 0, down = 0, down1 = 0, left = 0, left1 = 0, right = 0, right1 = 0, center = 0;
 
 	/**
 	 * Range of explosion of a bomb, initialized at one. Can be incremented with
@@ -179,20 +179,20 @@ public class Bomb {
 	}
 
 	/**
-	 * Checks if the countdown of the bomb has finished. If it have finished calls
-	 * the method detonate to explode the bomb
+	 * Checks if the countdown of the bomb has finished. If it has finished, calls
+	 * the method exploding() to make the animation of the explosion. Checks if the 
+	 * exploding time of the bomb has finished. If it has finished, calls the method explode().
 	 * 
 	 * @param timer
 	 *            value of the timer in the moment of calling
 	 * @param ableRemoteControl
 	 *            Refers to the field of the player {@link Player#remoteControl
 	 *            remoteControl}
-	 * @return True if had passed enough time to detonate. False otherwise
 	 */
 	public void detonate(long timer, boolean ableRemoteControl) {
 		if (ableRemoteControl || timer > this.initialTime + COUNT_DOWN) {
 			if (this.isPlaced()) {
-				exploding(timer);
+				exploding();
 				if (timer > this.initialTime + COUNT_DOWN + EXPLODING_TIME) {
 					explode();
 					this.resetBomb();
@@ -201,9 +201,17 @@ public class Bomb {
 		}
 	}
 
-	public void exploding(long timer) {
+	/**
+	 * Makes the animation of explosion for the surrounding blocks when the bomb countdown
+	 * has finished. It separately checks the four directions for breakable blocks. To get the 
+	 * correct image for each situation, for each direction we call a different method that returns the 
+	 * corresponding image, taking into account the reach-ability and the position of that block with 
+	 * respect to the block where the bomb was first exploded.
+	 */
+	public void exploding() {
 		if (ownLevel.board[xPos][yPos].isBreakable()) {
 			Main.visualBoard.gb_setSquareImage(xPos, yPos, explosionCenter());
+			damage(xPos, yPos);
 		}
 
 		// Exploding animation to the right blocks
@@ -211,6 +219,7 @@ public class Bomb {
 			for (int i = 1; i <= range && i < Constants.BOARD_SIZE; i++) {
 				if (ownLevel.board[(i+xPos)][yPos].isBreakable()) {
 					Main.visualBoard.gb_setSquareImage(xPos+i, yPos, explosionsRight(i,range));
+					damage(xPos+i, yPos);
 				}
 			}
 		}
@@ -220,47 +229,67 @@ public class Bomb {
 			for (int i = 1; i <= range && i < Constants.BOARD_SIZE; i++) {
 				if (ownLevel.board[(xPos-i)][yPos].isBreakable()) {
 					Main.visualBoard.gb_setSquareImage(xPos-i, yPos, explosionsLeft(i,range));
+					damage(xPos-i, yPos);
 				}
 			}
 		}
 
-		// Exploding animation to the upper blocks
+		// Exploding animation to the lower blocks
 		if (ownLevel.board[xPos][yPos+1].isBreakable()) {
 			for (int i = 1; i <= range && i < Constants.BOARD_SIZE; i++) {
 				if (ownLevel.board[xPos][yPos+1].isBreakable()) {
-					Main.visualBoard.gb_setSquareImage(xPos, yPos+i, explosionsUp(i,range));
+					Main.visualBoard.gb_setSquareImage(xPos, yPos+i, explosionsDown(i,range));
+					damage(xPos, yPos+i);
 				}
 			}
 		}
-		// Exploding animation to the lower blocks
+		// Exploding animation to the upper blocks
 		if (ownLevel.board[xPos][yPos-1].isBreakable()) {
 			for (int i = 1; i <= range && i < Constants.BOARD_SIZE; i++) {
 				if (ownLevel.board[xPos][yPos-1].isBreakable()) {
-					Main.visualBoard.gb_setSquareImage(xPos, yPos-i, explosionsDown(i,range));
+					Main.visualBoard.gb_setSquareImage(xPos, yPos-i, explosionsUp(i,range));
+					damage(xPos, yPos-i);
 				}
 			}
 		}
 	}
 
+	/**
+	 * It gets a different image depending on an increasing variable to generate 
+	 * a sense of an animated explosion for the central block.
+	 * 
+	 * @return the image for the explosion on the center
+	 */
 	private String explosionCenter() {
-		if (centre % 4 == 0) {
-			centre++;
+		if (center % 4 == 0) {
+			center++;
 			return "explosion_C1.gif";
-		} else if ((centre + 1) % 4 == 0) {
-			centre++;
+		} else if ((center + 1) % 4 == 0) {
+			center++;
 			return "explosion_C2.gif";
-		} else if ((centre + 2) % 4 == 0) {
-			centre++;
+		} else if ((center + 2) % 4 == 0) {
+			center++;
 			return "explosion_C3.gif";
-		} else if ((centre + 3) % 4 == 0) {
-			centre++;
+		} else if ((center + 3) % 4 == 0) {
+			center++;
 			return "explosion_C4.gif";
 		} else {
-			centre++;
+			center++;
 			return "explosion_C1.gif";
 		}
 	}
-
+	
+	/**
+	 * It chooses the adequate image depending on the range.
+	 * Also, by changing the image to similar ones, we generate
+	 * the sense of an animated explosion.
+	 * 
+	 * @param i 
+	 * 			it tells the position with respect to the central block
+	 * @param range
+	 * 			it depends on the bonuses that have been collected
+	 * @return the image for the explosion on the right blocks
+	 */
 	private String explosionsRight(int i, int range) {
 		if (i==range) {
 			if (right % 4 == 0) {
@@ -283,13 +312,13 @@ public class Bomb {
 			if (right1 % 4 == 0) {
 				right1++;
 				return "explosion_H1.gif";
-			} else if ((right + 1) % 4 == 0) {
+			} else if ((right1 + 1) % 4 == 0) {
 				right1++;
 				return "explosion_H2.gif";
-			} else if ((right + 2) % 4 == 0) {
+			} else if ((right1 + 2) % 4 == 0) {
 				right1++;
 				return "explosion_H3.gif";
-			} else if ((right + 3) % 4 == 0) {
+			} else if ((right1 + 3) % 4 == 0) {
 				right1++;
 				return "explosion_H4.gif";
 			} else {
@@ -298,7 +327,19 @@ public class Bomb {
 			}
 		}
 	}
+	
 
+	/**
+	 * It chooses the adequate image depending on the range.
+	 * Also, by changing the image to similar ones, we generate
+	 * the sense of an animated explosion.
+	 * 
+	 * @param i 
+	 * 			it tells the position with respect to the central block
+	 * @param range
+	 * 			it depends on the bonuses that have been collected
+	 * @return the image for the explosion on the left blocks
+	 */
 	private String explosionsLeft(int i, int range) {
 		if (i==range) {
 			if (left % 4 == 0) {
@@ -321,13 +362,13 @@ public class Bomb {
 			if (left1 % 4 == 0) {
 				left1++;
 				return "explosion_H1.gif";
-			} else if ((left + 1) % 4 == 0) {
+			} else if ((left1 + 1) % 4 == 0) {
 				left1++;
 				return "explosion_H2.gif";
-			} else if ((left + 2) % 4 == 0) {
+			} else if ((left1 + 2) % 4 == 0) {
 				left1++;
 				return "explosion_H3.gif";
-			} else if ((left + 3) % 4 == 0) {
+			} else if ((left1 + 3) % 4 == 0) {
 				left1++;
 				return "explosion_H4.gif";
 			} else {
@@ -337,78 +378,99 @@ public class Bomb {
 		}
 	}
 
-	private String explosionsUp(int i, int range) {
-		if (i==range) {
-			if (up % 4 == 0) {
-				up++;
-				return "explosion_S1.gif";
-			} else if ((up + 1) % 4 == 0) {
-				up++;
-				return "explosion_S2.gif";
-			} else if ((up + 2) % 4 == 0) {
-				up++;
-				return "explosion_S3.gif";
-			} else if ((up + 3) % 4 == 0) {
-				up++;
-				return "explosion_S4.gif";
-			} else {
-				up++;
-				return "explosion_S1.gif";
-			}
-		} else {
-			if (up1 % 4 == 0) {
-				up1++;
-				return "explosion_V1.gif";
-			} else if ((up + 1) % 4 == 0) {
-				up1++;
-				return "explosion_V2.gif";
-			} else if ((up + 2) % 4 == 0) {
-				up1++;
-				return "explosion_V3.gif";
-			} else if ((up + 3) % 4 == 0) {
-				up1++;
-				return "explosion_V4.gif";
-			} else {
-				up1++;
-				return "explosion_V1.gif";
-			}
-		}
-	}
-
-
+	/**
+	 * It chooses the adequate image depending on the range.
+	 * Also, by changing the image to similar ones, we generate
+	 * the sense of an animated explosion.
+	 * 
+	 * @param i 
+	 * 			it tells the position with respect to the central block
+	 * @param range
+	 * 			it depends on the bonuses that have been collected
+	 * @return the image for the explosion on the lower blocks
+	 */
 	private String explosionsDown(int i, int range) {
 		if (i==range) {
 			if (down % 4 == 0) {
 				down++;
-				return "explosion_N1.gif";
-			} else if ((up + 1) % 4 == 0) {
+				return "explosion_S1.gif";
+			} else if ((down + 1) % 4 == 0) {
 				down++;
-				return "explosion_N2.gif";
-			} else if ((up + 2) % 4 == 0) {
+				return "explosion_S2.gif";
+			} else if ((down + 2) % 4 == 0) {
 				down++;
-				return "explosion_N3.gif";
-			} else if ((up + 3) % 4 == 0) {
+				return "explosion_S3.gif";
+			} else if ((down + 3) % 4 == 0) {
 				down++;
-				return "explosion_N4.gif";
+				return "explosion_S4.gif";
 			} else {
 				down++;
-				return "explosion_N1.gif";
+				return "explosion_S1.gif";
 			}
 		} else {
 			if (down1 % 4 == 0) {
 				down1++;
 				return "explosion_V1.gif";
-			} else if ((up + 1) % 4 == 0) {
+			} else if ((down1 + 1) % 4 == 0) {
 				down1++;
 				return "explosion_V2.gif";
-			} else if ((up + 2) % 4 == 0) {
+			} else if ((down1 + 2) % 4 == 0) {
 				down1++;
 				return "explosion_V3.gif";
-			} else if ((up + 3) % 4 == 0) {
+			} else if ((down1 + 3) % 4 == 0) {
 				down1++;
 				return "explosion_V4.gif";
 			} else {
 				down1++;
+				return "explosion_V1.gif";
+			}
+		}
+	}
+
+	/**
+	 * It chooses the adequate image depending on the range.
+	 * Also, by changing the image to similar ones, we generate
+	 * the sense of an animated explosion.
+	 * 
+	 * @param i 
+	 * 			it tells the position with respect to the central block
+	 * @param range
+	 * 			it depends on the bonuses that have been collected
+	 * @return the image for the explosion on the upper blocks
+	 */
+	private String explosionsUp(int i, int range) {
+		if (i==range) {
+			if (up % 4 == 0) {
+				up++;
+				return "explosion_N1.gif";
+			} else if ((up + 1) % 4 == 0) {
+				up++;
+				return "explosion_N2.gif";
+			} else if ((up + 2) % 4 == 0) {
+				up++;
+				return "explosion_N3.gif";
+			} else if ((up + 3) % 4 == 0) {
+				up++;
+				return "explosion_N4.gif";
+			} else {
+				up++;
+				return "explosion_N1.gif";
+			}
+		} else {
+			if (up1 % 4 == 0) {
+				up1++;
+				return "explosion_V1.gif";
+			} else if ((up1 + 1) % 4 == 0) {
+				up1++;
+				return "explosion_V2.gif";
+			} else if ((up1 + 2) % 4 == 0) {
+				up1++;
+				return "explosion_V3.gif";
+			} else if ((up1 + 3) % 4 == 0) {
+				up1++;
+				return "explosion_V4.gif";
+			} else {
+				up1++;
 				return "explosion_V1.gif";
 			}
 		}
@@ -447,7 +509,7 @@ public class Bomb {
 					}
 				}
 			}
-			// Checking the blocks upwards
+			// Checking the blocks downwards
 			if (ownLevel.board[xPos][yPos + 1].isBreakable()) {
 				for (int i = yPos; i <= yPos + range && i > 0; i++) {
 					if (ownLevel.board[xPos][i].isBreakable()) {
@@ -456,7 +518,7 @@ public class Bomb {
 					}
 				}
 			}
-			// Checking the blocks downwards
+			// Checking the blocks upwards
 			if (ownLevel.board[xPos][yPos - 1].isBreakable()) {
 				for (int i = yPos; i >= yPos - range && i < Constants.BOARD_SIZE; i--) {
 					if (ownLevel.board[xPos][i].isBreakable()) {
@@ -467,18 +529,36 @@ public class Bomb {
 			}
 		}
 
+		/**
+		 * It checks whether any of the sprites where present (in the same XY-position) when the bomb
+		 * blasted off. If the sprite present was the player (ID==0), then the player will have killed
+		 * himself. A game-over message will be shown, displaying the total amount of points accumulated.
+		 * If the sprite present is an enemy, we kill the enemy and add points to the player for killing it.
+		 * By checking that the sprite is alive, we are ensuring that we only kill it once (has it could
+		 * happen that the enemy moved from one cell to the other while exploding, therefore killing it 
+		 * again and adding extra points to the player for killing the same enemy twice. 
+		 * 
+		 * @param xPos 
+		 * 			is the X-position of the block where part of an explosion took place 
+		 * @param yPos
+		 * 			is the Y-position of the block where part of an explosion took place
+		 */
 		private void damage(int xPos, int yPos) {
 			for (int i = 0; i < Main.maxID; i++) {
-				if (ownLevel.getSpriteByID(i).xPos == xPos && ownLevel.getSpriteByID(i).yPos == yPos) {
+				if (ownLevel.getSpriteByID(i).xPos == xPos && ownLevel.getSpriteByID(i).yPos == yPos
+						&& ownLevel.getSpriteByID(i).isAlive()) {
 					ownLevel.getSpriteByID(i).setHp(0);
 					if (i == 0) { // The player had been harmed
 						Main.visualBoard.gb_println("You have killed yourself!!!");
-						Main.visualBoard.gb_showMessageDialog("GAME OVER "+"\n"+"Try again");
+						((Player)(ownLevel.getSpriteByID(Main.PLAYER_ID))).killed();
+						Main.visualBoard.gb_showMessageDialog("GAME OVER "+"\n"+"You earned "+
+						((Player)(ownLevel.getSpriteByID(Main.PLAYER_ID))).getScore()+" points");
 					} else {
 						((Player) (ownLevel.getSpriteByID(Main.PLAYER_ID)))
 						.addScore(((Enemy) (ownLevel.getSpriteByID(i))).getPoints());
 						Main.visualBoard.gb_println("You have killed the enemy " + i + ". You won "
 								+ ((Enemy) (ownLevel.getSpriteByID(i))).getPoints() + " points");
+						ownLevel.getSpriteByID(i).killed();
 					}
 				}
 			}

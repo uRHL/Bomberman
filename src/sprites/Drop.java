@@ -13,6 +13,7 @@ public class Drop extends Enemy {
     private final float DROP_MIN_SPEED = 0.1F;
     /**
      * Variables used for changing the images of the drop
+     * and creating animation
      */
     private int up = 0, down = 0, left = 0, right = 0;
     /**
@@ -54,13 +55,14 @@ public class Drop extends Enemy {
 
     /**
      * Moves the Drop. A Drop follows the player, therefore, it will try to reach
-     * the Player position.
+     * the Player position. Animation implemented
      */
     public void move() {
         double copyX = Math.min((xCoord + 0.4), Constants.BOARD_SIZE);
-        double copyY = Math.min((yCoord + 0.8), Constants.BOARD_SIZE);
+        double copyY = Math.min((yCoord + 0.9), Constants.BOARD_SIZE);
         int playerXpos = ownLevel.sprites[0][0].getxPos();
         int playerYpos = ownLevel.sprites[0][0].getyPos();
+        // moving to the right
         if (ownLevel.board[(int)(copyX+speed)][(int)(copyY)].isWalkable() && playerXpos > xPos) {
         	if (right % 4 == 0) {
                 image = "enemy222.png";
@@ -74,7 +76,8 @@ public class Drop extends Enemy {
             right++;
             xCoord = xCoord + 0.2;
             xPos = (int) (xCoord+0.5);
-        } else if (ownLevel.board[(int) (copyX - 0.2)][(int) (copyY)].isWalkable() && playerXpos < xPos)  {
+        } // moving to the left
+        else if (ownLevel.board[(int) (copyX - 0.2)][(int) (copyY)].isWalkable() && playerXpos < xPos)  {
         	if (left % 4 == 0) {
                 image = "enemy212.png";
             } else if ((left + 1) % 4 == 0) {
@@ -87,7 +90,8 @@ public class Drop extends Enemy {
             left++;
             xCoord = xCoord - 0.2;
             xPos = (int) (xCoord+0.5);
-        } else if (ownLevel.board[(int) (copyX)][(int) (copyY - 0.2)].isWalkable() && playerYpos <= yPos) {
+        } //moving up
+        else if (ownLevel.board[(int) (copyX)][(int) (copyY - 0.2)].isWalkable() && playerYpos <= yPos) {
         	if (up % 4 == 0) {
                 image = "enemy212.png";
             } else if ((up + 1) % 4 == 0) {
@@ -100,7 +104,8 @@ public class Drop extends Enemy {
             up++;
             yCoord = yCoord - 0.2;
             yPos = (int) (yCoord+0.5);
-        } else if (ownLevel.board[(int) (copyX)][(int) (copyY - 0.2)].isWalkable() && playerYpos >= yPos) {
+        } //moving down
+        else if (ownLevel.board[(int) (copyX)][(int) (copyY - 0.2)].isWalkable() && playerYpos >= yPos) {
         	if (down % 4 == 0) {
                 image = "enemy222.png";
             } else if ((down + 1) % 4 == 0) {
@@ -132,7 +137,7 @@ public class Drop extends Enemy {
     @Override
     public void killed() {
         alive = false;
-        image = "enemy222.png";
+        image = "enemy200.png";
 
     }
 

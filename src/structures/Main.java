@@ -29,9 +29,7 @@ public class Main {
      * Graphic representation of the level. GameBoardGUI class contains its own
      * methods to print and set messages.
      */
-    
-//    public static GameBoardGUI visualBoard_intro = new GameBoardGUI(30, 30);
-    
+        
     public static GameBoardGUI visualBoard = new GameBoardGUI(Constants.BOARD_SIZE, Constants.BOARD_SIZE);
 
     /**
@@ -105,10 +103,13 @@ public class Main {
             timer = System.currentTimeMillis();
             printBoard();
             refreshGBvalues();
-            // The gb_getLastAction() method returns a String with the last
-            // action the user performed in the GUI. Examples are "right", "up",
-            // "space". See the documentation for more details.
-            // trim() removes any heading or tailing space
+            
+            /**
+             * The gb_getLastAction() method returns a String with the last
+             * action the user performed in the GUI. Examples are "right", "up",
+             * "space". See the documentation for more details.
+             * trim() removes any heading or tailing space
+             */
             String lastAction = visualBoard.gb_getLastAction().trim();
 
             // We only execute it if the user did something
@@ -187,10 +188,11 @@ public class Main {
         }
     }
 
+    /**
+     * 
+     * @param lastAction
+     */
     public static void movePlayer(String lastAction) {
-        // Checking its value. We are not controlling the borders.
-        // Notice that in the real game the movements should be of 1/10
-        // cell. There is a method to do it.
         Player playerCopy = (Player) levels[currentLevel].getSpriteByID(PLAYER_ID);
 
         if (lastAction.equals("space")) {
@@ -198,25 +200,30 @@ public class Main {
         } else if (lastAction.equals("tab") && playerCopy.hasRemoteControl()) {
             detonate(true);
         } else {
-            levels[currentLevel].sprites[0][0].move(lastAction);
+        	if (levels[currentLevel].sprites[0][0].getHealth() > 0) {
+        		levels[currentLevel].sprites[0][0].move(lastAction);
+        	}
         }
     }
-
+    
+    /**
+     * 
+     */
     private static void enemiesAttacks() {
         Player playerCopy = (Player) levels[currentLevel].getSpriteByID(PLAYER_ID);
         for (int i = 1; i < levels[currentLevel].sprites.length; i++) {
             for (int j = 0; j < levels[currentLevel].sprites[i].length; j++) {
                 if (levels[currentLevel].sprites[i][j].getxPos() == playerCopy.getxPos()
-                        && levels[currentLevel].sprites[i][j].getyPos() == playerCopy.getyPos()) {
-                    playerCopy.decrementHealth();
-                    visualBoard.gb_println("You have lost 20 points of health");
-                    visualBoard.gb_setValueHealthCurrent(playerCopy.getHealth());
+                        && levels[currentLevel].sprites[i][j].getyPos() == playerCopy.getyPos()
+                        && levels[currentLevel].sprites[i][j].isAlive()) {
+                    playerCopy.decrementHealth(timer);
+                    Main.visualBoard.gb_setValueHealthCurrent(playerCopy.getHealth());
                     if (!playerCopy.isAlive()) { // Player not alive
                         visualBoard.gb_setSpriteImage(0, playerCopy.getImage());
                         visualBoard.gb_println("You have been killed");
-                        visualBoard.gb_showMessageDialog("GAME OVER" + "\n" + "Try again");
+                        visualBoard.gb_showMessageDialog("GAME OVER" + "\n" + 
+                        "You earned "+playerCopy.getScore()+" points.");
                     }
-
                 }
             }
         }
@@ -290,27 +297,37 @@ public class Main {
     }
 
     /**
-     * Adds a new sprite to the visualBoard, and set it visible
+     * Adds a new sprite to the visualBoard, and sets it at the top if it is the player,
+     * and at the bottom if it is just an enemy
      * 
      * @param id
      *            ID of the sprite to add
      */
     public static void addSpriteByID(int id) {
         Sprite currentSprite = levels[currentLevel].getSpriteByID(id);
-        visualBoard.gb_addSprite(id, currentSprite.getImage(), true);
+        if(id==0) {
+        	visualBoard.gb_addSprite(id, currentSprite.getImage(), true);
+        } else {
+        	visualBoard.gb_addSprite(id, currentSprite.getImage(), false);
+        }
         moveSprite(id);
         setVisible(id, true);
 
     }
 
     /**
-     * Adds a new sprite to the visualBoard, and set it visible.
+     * Adds a new sprite to the visualBoard, and sets it at the top if it is the player,
+     * and at the bottom if it is just an enemy.
      * 
      * @param spriteToAdd
      *            Sprite to add
      */
     public static void addSprite(Sprite spriteToAdd) {
-        visualBoard.gb_addSprite(spriteToAdd.getID(), spriteToAdd.getImage(), true);
+    	if(spriteToAdd.getID()==0) {
+    		visualBoard.gb_addSprite(spriteToAdd.getID(), spriteToAdd.getImage(), true);
+        } else {
+        	visualBoard.gb_addSprite(spriteToAdd.getID(), spriteToAdd.getImage(), false);
+        }
         moveSprite(spriteToAdd.getID());
         setVisible(spriteToAdd.getID(), true);
 

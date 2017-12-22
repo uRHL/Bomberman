@@ -218,12 +218,15 @@ public abstract class Sprite {
     public abstract void move();
 
     /**
-     * Abstract method to move an sprite with respect to the last key pressed.
+     * Abstract method to move a sprite with respect to the last key pressed.
      * 
      * @param lastAction
      *            Value of the last key pressed.
      */
     public abstract void move(String lastAction);
 
+    /**
+     * Abstract method to kill a sprite.
+     */
     public abstract void killed();
 }

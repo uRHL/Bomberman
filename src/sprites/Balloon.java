@@ -31,6 +31,7 @@ public class Balloon extends Enemy {
 	private final int POINTS_BALLOON = 100;
 	/**
 	 * Variables used for changing the images of the balloon
+	 * and creating animation
 	 */
 	private int up = 0, down = 0, left = 0, right = 0;
 
@@ -67,7 +68,7 @@ public class Balloon extends Enemy {
 	}
 
 	/**
-	 * Method that moves in a random direction a Balloon
+	 * Method that moves in a random direction a Balloon. Animation implemented.
 	 */
 	@Override
 	public void move() {
